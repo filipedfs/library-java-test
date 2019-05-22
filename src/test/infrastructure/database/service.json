@@ -1,0 +1,56 @@
+{
+	"id": "library-java-test-database",
+	"container": {
+		"portMappings": [
+			{
+				"containerPort": 5432,
+				"hostPort": 25000,
+				"labels": {
+					"VIP_0": "/library-java-test-database:5432"
+				}
+			}
+		],
+		"type": "MESOS",
+		"volumes": [
+			{
+				"containerPath": "/var/lib/postgresql/data",
+				"hostPath": "postgres_data",
+				"mode": "RW"
+			},
+			{
+				"containerPath": "postgres_data",
+				"mode": "RW",
+				"external": {
+					"size": 1,
+					"name": "library-java-test-database-data",
+					"provider": "dvdi",
+					"options": {
+						"dvdi/driver": "rexray"
+					}
+				}
+			}
+		],
+		"docker": {
+			"image": "coldis/library-java-test-database",
+			"forcePullImage": true,
+			"parameters": []
+		}
+	},
+	"env": {
+		"POSTGRES_USER": "postgres",
+		"POSTGRES_PASSWORD": "postgres",
+		"USER_NAME": "test",
+		"USER_PASSWORD": "test",
+		"DATABASE_NAME": "test",
+		"ENABLE_JSON_CAST": true,
+		"ENABLE_UNACCENT": true,
+		"REPLICATOR_USER_NAME": "replicator",
+		"REPLICATOR_USER_PASSWORD": "test"
+	},
+	"healthChecks": [],
+	"args": [],
+	"cpus": 1,
+	"disk": 1024,
+	"instances": 1,
+	"mem": 256
+}
