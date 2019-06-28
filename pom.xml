@@ -5,15 +5,27 @@
 	<parent>
 		<groupId>org.coldis</groupId>
 		<artifactId>configuration</artifactId>
-		<version>0.0.7</version>
+		<version>0.0.1</version>
 	</parent>
 
 	<groupId>org.coldis.library</groupId>
 	<artifactId>test</artifactId>
-	<version>0.0.5-SNAPSHOT</version>
+	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Test utils</name>
+	<description>Core Java test utilities.</description>
+	<url>http://coldis.org/project/library/java-test</url>
+	<licenses>
+		<license>
+			<name>GPL</name>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<email>me@rvcoutinho.com</email>
+		</developer>
+	</developers>
 
 	<properties>
 	</properties>
@@ -30,7 +42,7 @@
 		<dependency>
 			<groupId>org.coldis.library</groupId>
 			<artifactId>core</artifactId>
-			<version>0.0.4</version>
+			<version>0.0.1</version>
 			<scope>test</scope>
 		</dependency>
 
