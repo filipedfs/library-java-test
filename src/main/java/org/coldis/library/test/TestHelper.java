@@ -1,13 +1,27 @@
 package org.coldis.library.test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.coldis.library.helper.ReflectionHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Test helper.
  */
 public class TestHelper {
+
+	/**
+	 * Logger.
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(TestHelper.class);
 
 	/**
 	 * Short wait time (milliseconds).
@@ -32,7 +46,7 @@ public class TestHelper {
 	/**
 	 * Waits until variable is valid.
 	 *
-	 * @param                     <Type> The variable type.
+	 * @param  <Type>             The variable type.
 	 * @param  variableSupplier   Variable supplier function.
 	 * @param  validVariableState The variable valid state verification.
 	 * @param  maxWait            Milliseconds to wait until valid state is met.
@@ -76,6 +90,35 @@ public class TestHelper {
 		}
 		// Returns if valid state has been met.
 		return validStateMet;
+	}
+
+	/**
+	 * Creates incomplete objects.
+	 *
+	 * @param  <Type>            Type.
+	 * @param  baseObject        Base object to be cloned with incomplete data.
+	 * @param  cloneFunction     Clone function.
+	 * @param  attributesToUnset Attributes to individually unset from base object.
+	 * @return                   Various clones of the base object with missing
+	 *                           attributes.
+	 */
+	public static <Type> Collection<Type> createIncompleteObjects(final Type baseObject,
+			final Function<Type, Type> cloneFunction, final Collection<String> attributesToUnset) {
+		// Creates the incomplete objects list.
+		final List<Type> incompleteObjects = new ArrayList<>();
+		// If both base object and attributes are given.
+		if ((baseObject != null) && !CollectionUtils.isEmpty(attributesToUnset)) {
+			// For each attribute to unset.
+			for (final String attributeToUnset : attributesToUnset) {
+				// Clones the object and adds it to the list.
+				final Type incompleteObject = cloneFunction.apply(baseObject);
+				incompleteObjects.add(incompleteObject);
+				// Sets the attribute to null.
+				ReflectionHelper.setAttribute(incompleteObject, attributeToUnset, null);
+			}
+		}
+		// Returns the incomplete objects list.
+		return incompleteObjects;
 	}
 
 }
