@@ -42,11 +42,7 @@
 		<dependency>
 			<groupId>org.coldis.library</groupId>
 			<artifactId>core</artifactId>
-<<<<<<< HEAD
 			<version>0.0.13</version>
-=======
-			<version>0.0.11</version>
->>>>>>> branch 'master' of https://github.com/coldis-org/library-java-test.git
 		</dependency>
 
 		<dependency>
