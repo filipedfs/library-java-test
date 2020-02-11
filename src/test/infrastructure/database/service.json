@@ -10,18 +10,12 @@
 				}
 			}
 		],
-		"type": "MESOS",
+		"type": "DOCKER",
 		"volumes": [
 			{
 				"containerPath": "/var/lib/postgresql/data",
-				"hostPath": "postgres_data",
-				"mode": "RW"
-			},
-			{
-				"containerPath": "postgres_data",
 				"mode": "RW",
 				"external": {
-					"size": 1,
 					"name": "library-java-test-database-data",
 					"provider": "dvdi",
 					"options": {
@@ -42,8 +36,8 @@
 		"USER_NAME": "test",
 		"USER_PASSWORD": "test",
 		"DATABASE_NAME": "test",
-		"ENABLE_JSON_CAST": true,
-		"ENABLE_UNACCENT": true,
+		"ENABLE_JSON_CAST": "true",
+		"ENABLE_UNACCENT": "true",
 		"REPLICATOR_USER_NAME": "replicator",
 		"REPLICATOR_USER_PASSWORD": "test"
 	},
