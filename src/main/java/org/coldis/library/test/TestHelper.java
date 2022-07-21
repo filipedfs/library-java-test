@@ -1,5 +1,6 @@
 package org.coldis.library.test;
 
+import java.time.Clock;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -9,6 +10,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.coldis.library.helper.DateTimeHelper;
 import org.coldis.library.helper.ReflectionHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +46,19 @@ public class TestHelper {
 	public static final Integer VERY_LONG_WAIT = 29 * 1000;
 
 	/**
+	 * Regular clock.
+	 */
+	public static final Clock REGULAR_CLOCK = DateTimeHelper.getClock();
+
+	/**
+	 * Cleans after each test.
+	 */
+	public static void cleanClock() {
+		// Sets back to the regular clock.
+		DateTimeHelper.setClock(TestHelper.REGULAR_CLOCK);
+	}
+
+	/**
 	 * Waits until variable is valid.
 	 *
 	 * @param  <Type>             The variable type.
@@ -58,16 +73,18 @@ public class TestHelper {
 	 *                                ignorable exception.
 	 */
 	@SafeVarargs
-	public static <Type> Boolean waitUntilValid(final Supplier<Type> variableSupplier,
-			final Predicate<Type> validVariableState, final Integer maxWait, final Integer poll,
+	public static <Type> Boolean waitUntilValid(
+			final Supplier<Type> variableSupplier,
+			final Predicate<Type> validVariableState,
+			final Integer maxWait,
+			final Integer poll,
 			final Class<? extends Throwable>... exceptionsToIgnore) throws Exception {
 		// Valid state is not considered met by default.
-		Boolean validStateMet = false;
+		boolean validStateMet = false;
 		// Validation start time stamp.
 		final Long startTimestamp = System.currentTimeMillis();
 		// Until wait time is not reached.
-		for (Long currentTimestamp = System.currentTimeMillis(); (startTimestamp
-				+ maxWait) > currentTimestamp; currentTimestamp = System.currentTimeMillis()) {
+		for (Long currentTimestamp = System.currentTimeMillis(); (startTimestamp + maxWait) > currentTimestamp; currentTimestamp = System.currentTimeMillis()) {
 			// If the variable state is valid.
 			try {
 				if (validVariableState.test(variableSupplier.get())) {
@@ -79,8 +96,8 @@ public class TestHelper {
 			// If the variable state cannot be tested.
 			catch (final Throwable throwable) {
 				// If the exception is not to be ignored.
-				if ((exceptionsToIgnore == null) || !Arrays.asList(exceptionsToIgnore).stream()
-						.anyMatch(exception -> exception.isAssignableFrom(throwable.getClass()))) {
+				if ((exceptionsToIgnore == null)
+						|| !Arrays.asList(exceptionsToIgnore).stream().anyMatch(exception -> exception.isAssignableFrom(throwable.getClass()))) {
 					// Throws the exception and stops the wait.
 					throw throwable;
 				}
@@ -102,8 +119,10 @@ public class TestHelper {
 	 * @return                   Various clones of the base object with missing
 	 *                           attributes.
 	 */
-	public static <Type> Collection<Type> createIncompleteObjects(final Type baseObject,
-			final Function<Type, Type> cloneFunction, final Collection<String> attributesToUnset) {
+	public static <Type> Collection<Type> createIncompleteObjects(
+			final Type baseObject,
+			final Function<Type, Type> cloneFunction,
+			final Collection<String> attributesToUnset) {
 		// Creates the incomplete objects list.
 		final List<Type> incompleteObjects = new ArrayList<>();
 		// If both base object and attributes are given.

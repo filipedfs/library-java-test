@@ -31,15 +31,15 @@
 		}
 	},
 	"env": {
-		"POSTGRES_USER": "postgres",
-		"POSTGRES_PASSWORD": "postgres",
-		"USER_NAME": "test",
-		"USER_PASSWORD": "test",
-		"DATABASE_NAME": "test",
+		"POSTGRES_ADMIN_USER": "postgres",
+		"POSTGRES_ADMIN_PASSWORD": "postgres",
+		"POSTGRES_DEFAULT_USER": "test",
+		"POSTGRES_DEFAULT_PASSWORD": "test",
+		"POSTGRES_DEFAULT_DATABASE": "test",
 		"ENABLE_JSON_CAST": "true",
 		"ENABLE_UNACCENT": "true",
-		"REPLICATOR_USER_NAME": "replicator",
-		"REPLICATOR_USER_PASSWORD": "test"
+		"POSTGRES_REPLICATOR_USER": "replicator",
+		"POSTGRES_REPLICATOR_PASSWORD": "test"
 	},
 	"healthChecks": [],
 	"args": [],
