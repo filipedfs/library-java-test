@@ -17,8 +17,8 @@ public class TestHelperTest {
 	/**
 	 * Test data.
 	 */
-	private static final List<TestClass> COMPLETE_TEST_DATA = List.of(
-			new TestClass("1", 1l, new TestClass("1", 1L, null)), new TestClass("2", 2l, new TestClass("2", 2L, null)));
+	private static final List<TestClass> COMPLETE_TEST_DATA = List.of(new TestClass("1", 1l, new TestClass("1", 1L, null)),
+			new TestClass("2", 2l, new TestClass("2", 2L, null)));
 
 	/**
 	 * Test variable.
@@ -118,25 +118,22 @@ public class TestHelperTest {
 			Assertions.assertNotNull(testData.getTest3().getTest1());
 			Assertions.assertNotNull(testData.getTest3().getTest2());
 			// For each incomplete object created from the test data.
-			for (final TestClass incompleteTestData : new HashSet<>(
-					TestHelper.createIncompleteObjects(testData, data -> {
-						try {
-							final TestClass clone = (TestClass) data.clone();
-							clone.setTest3((TestClass) data.getTest3().clone());
-							return clone;
-						}
-						catch (final CloneNotSupportedException exception) {
-							throw new IllegalStateException(exception);
-						}
-					}, List.of("test1", "test2", "test3.test1", "test3.test2")))) {
+			for (final TestClass incompleteTestData : new HashSet<>(TestHelper.createIncompleteObjects(testData, data -> {
+				try {
+					final TestClass clone = (TestClass) data.clone();
+					clone.setTest3((TestClass) data.getTest3().clone());
+					return clone;
+				}
+				catch (final CloneNotSupportedException exception) {
+					throw new IllegalStateException(exception);
+				}
+			}, List.of("test1", "test2", "test3.test1", "test3.test2")))) {
 				// Counts the number of missing attributes.
 				Integer missingAttributes = 0;
 				missingAttributes = (incompleteTestData.getTest1() == null ? missingAttributes + 1 : missingAttributes);
 				missingAttributes = (incompleteTestData.getTest2() == null ? missingAttributes + 1 : missingAttributes);
-				missingAttributes = (incompleteTestData.getTest3().getTest1() == null ? missingAttributes + 1
-						: missingAttributes);
-				missingAttributes = (incompleteTestData.getTest3().getTest2() == null ? missingAttributes + 1
-						: missingAttributes);
+				missingAttributes = (incompleteTestData.getTest3().getTest1() == null ? missingAttributes + 1 : missingAttributes);
+				missingAttributes = (incompleteTestData.getTest3().getTest2() == null ? missingAttributes + 1 : missingAttributes);
 				// Makes sure only one attribute is missing at a time.
 				Assertions.assertEquals(1, missingAttributes.intValue());
 			}
