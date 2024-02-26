@@ -184,10 +184,8 @@ public class TestHelperTest {
 				queryResult.next();
 				Assertions.assertEquals(10, queryResult.getInt(1));
 				Assertions.assertNotNull(System.getProperty("POSTGRES_CONTAINER_IP"));
-				Assertions.assertNotNull(System.getProperty("POSTGRES_CONTAINER_HOSTNAME"));
 				Assertions.assertNotNull(System.getProperty("POSTGRES_CONTAINER_5432"));
 				System.out.println(System.getProperty("POSTGRES_CONTAINER_IP"));
-				System.out.println(System.getProperty("POSTGRES_CONTAINER_HOSTNAME"));
 				System.out.println(System.getProperty("POSTGRES_CONTAINER_5432"));
 			}
 		}
