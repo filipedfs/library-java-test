@@ -175,7 +175,6 @@ public class TestHelperTest {
 	@Test
 	public void testPostgresContainer() throws Exception {
 		final Integer mappedPort = TestHelperTest.POSTGRES_CONTAINER.getMappedPort(5432);
-
 		try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:" + mappedPort + "/test", "test", "test")) {
 			try (Statement statement = connection.createStatement()) {
 				Class.forName("org.postgresql.Driver");
@@ -183,9 +182,9 @@ public class TestHelperTest {
 				final ResultSet queryResult = statement.executeQuery(sql);
 				queryResult.next();
 				Assertions.assertEquals(10, queryResult.getInt(1));
+				Assertions.assertNotNull(System.getProperty("POSTGRES_CONTAINER_5432"));
 			}
 		}
-
 	}
 
 }

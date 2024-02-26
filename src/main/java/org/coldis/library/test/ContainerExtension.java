@@ -5,12 +5,19 @@ import java.lang.reflect.Field;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
 
 /**
  * Container extension.
  */
 public class ContainerExtension implements BeforeAllCallback, AfterAllCallback {
+
+	/**
+	 * Logger.
+	 */
+	private static final Logger LOGGER = LoggerFactory.getLogger(ContainerExtension.class);
 
 	/**
 	 * Before each test.
@@ -24,8 +31,19 @@ public class ContainerExtension implements BeforeAllCallback, AfterAllCallback {
 		for (final Field field : context.getTestClass().get().getDeclaredFields()) {
 			if (java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
 				if (field.getType().equals(GenericContainer.class)) {
-					final GenericContainer<?> container = (GenericContainer<?>) field.get(null);
-					container.start();
+					try {
+						final GenericContainer<?> container = (GenericContainer<?>) field.get(null);
+						container.start();
+						container.getFirstMappedPort();
+						container.getExposedPorts().forEach((
+								boundPort) -> {
+							final Integer mappedPort = container.getMappedPort(boundPort);
+							System.setProperty(field.getName() + "_" + boundPort, mappedPort.toString());
+						});
+					}
+					catch (final Exception exception) {
+						ContainerExtension.LOGGER.error("Error starting container.", exception);
+					}
 				}
 			}
 		}
@@ -48,12 +66,11 @@ public class ContainerExtension implements BeforeAllCallback, AfterAllCallback {
 						container.close();
 					}
 					catch (final Exception exception) {
-						// Ignores exception.
+						ContainerExtension.LOGGER.error("Error stopping container.", exception);
 					}
 				}
 			}
 		}
-
 	}
 
 }
