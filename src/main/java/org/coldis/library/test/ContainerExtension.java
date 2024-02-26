@@ -34,12 +34,15 @@ public class ContainerExtension implements BeforeAllCallback, AfterAllCallback {
 					try {
 						final GenericContainer<?> container = (GenericContainer<?>) field.get(null);
 						container.start();
+						// Sets the container ports as system properties.
 						container.getExposedPorts().forEach((
 								exposedPort) -> {
 							final Integer mappedPort = container.getMappedPort(exposedPort);
 							final String mappedPortPropertyName = field.getName() + "_" + exposedPort;
 							System.setProperty(mappedPortPropertyName, mappedPort.toString());
 						});
+						// Sets the container host as system property.
+						System.setProperty(field.getName() + "_HOST", container.getContainerInfo().getNetworkSettings().getIpAddress());
 					}
 					catch (final Exception exception) {
 						ContainerExtension.LOGGER.error("Error starting container.", exception);
