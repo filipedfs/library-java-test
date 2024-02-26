@@ -39,6 +39,7 @@ public class ContainerExtension implements BeforeAllCallback, AfterAllCallback {
 							final Integer mappedPort = container.getMappedPort(boundPort);
 							System.setProperty(field.getName() + "_" + boundPort, mappedPort.toString());
 						});
+						Thread.sleep(2 * 1000);
 					}
 					catch (final Exception exception) {
 						ContainerExtension.LOGGER.error("Error starting container.", exception);
