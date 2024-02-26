@@ -34,7 +34,6 @@ public class ContainerExtension implements BeforeAllCallback, AfterAllCallback {
 					try {
 						final GenericContainer<?> container = (GenericContainer<?>) field.get(null);
 						container.start();
-						container.getFirstMappedPort();
 						container.getExposedPorts().forEach((
 								boundPort) -> {
 							final Integer mappedPort = container.getMappedPort(boundPort);
