@@ -174,8 +174,8 @@ public class TestHelperTest {
 	 */
 	@Test
 	public void testPostgresContainer() throws Exception {
-		final Integer mappedPort = TestHelperTest.POSTGRES_CONTAINER.getMappedPort(5432);
-		try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:" + mappedPort + "/test", "test", "test")) {
+		try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:" + System.getProperty("POSTGRES_CONTAINER_5432") + "/" + TestHelper.TEST_USER_NAME,
+				TestHelper.TEST_USER_NAME, TestHelper.TEST_USER_PASSWORD)) {
 			try (Statement statement = connection.createStatement()) {
 				Class.forName("org.postgresql.Driver");
 				final String sql = "SELECT 10;";
