@@ -87,8 +87,7 @@ public class TestHelper {
 	@SuppressWarnings("resource")
 	public static GenericContainer<?> createArtemisContainer() {
 		return new GenericContainer<>("coldis/infrastructure-messaging-service:2.16").withExposedPorts(8161, 61616).withEnv(
-				Map.of("ARTEMIS_USERNAME", TestHelper.TEST_USER_NAME, "ARTEMIS_PASSWORD", TestHelper.TEST_USER_PASSWORD, "ARTEMIS_PERF_JOURNAL", "ALWAYS"))
-				.withReuse(false);
+				Map.of("ARTEMIS_USERNAME", TestHelper.TEST_USER_NAME, "ARTEMIS_PASSWORD", TestHelper.TEST_USER_PASSWORD, "ARTEMIS_PERF_JOURNAL", "ALWAYS"));
 	}
 
 	/**
@@ -96,8 +95,7 @@ public class TestHelper {
 	 */
 	@SuppressWarnings("resource")
 	public static GenericContainer<?> createRedisContainer() {
-		return new GenericContainer<>("redis:7.2.4-bookworm").withExposedPorts(6379).withCommand("redis-server", "--save", "60", "1", "--loglevel", "warning")
-				.withReuse(false);
+		return new GenericContainer<>("redis:7.2.4-bookworm").withExposedPorts(6379).withCommand("redis-server", "--save", "60", "1", "--loglevel", "warning");
 	}
 
 	/**
