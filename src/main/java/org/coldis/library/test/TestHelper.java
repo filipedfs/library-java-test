@@ -78,7 +78,7 @@ public class TestHelper {
 		return new GenericContainer<>("coldis/infrastructure-transactional-repository:5.0.1").withExposedPorts(5432)
 				.withEnv(Map.of("ENABLE_JSON_CAST", "true", "ENABLE_UNACCENT", "true", "POSTGRES_ADMIN_PASSWORD", "postgres", "POSTGRES_ADMIN_USER", "postgres",
 						"REPLICATOR_USER_NAME", "replicator", "REPLICATOR_USER_PASSWORD", "replicator", "POSTGRES_DEFAULT_USER", TestHelper.TEST_USER_NAME,
-						"POSTGRES_DEFAULT_PASSWORD", TestHelper.TEST_USER_PASSWORD, "POSTGRES_DEFAULT_DATABASE", TestHelper.TEST_USER_NAME)).withStartupCheckStrategy(null);
+						"POSTGRES_DEFAULT_PASSWORD", TestHelper.TEST_USER_PASSWORD, "POSTGRES_DEFAULT_DATABASE", TestHelper.TEST_USER_NAME));
 	}
 
 	/**
@@ -87,7 +87,8 @@ public class TestHelper {
 	@SuppressWarnings("resource")
 	public static GenericContainer<?> createArtemisContainer() {
 		return new GenericContainer<>("coldis/infrastructure-messaging-service:2.16").withExposedPorts(8161, 61616).withEnv(
-				Map.of("ARTEMIS_USERNAME", TestHelper.TEST_USER_NAME, "ARTEMIS_PASSWORD", TestHelper.TEST_USER_PASSWORD, "ARTEMIS_PERF_JOURNAL", "ALWAYS")).withReuse(false);
+				Map.of("ARTEMIS_USERNAME", TestHelper.TEST_USER_NAME, "ARTEMIS_PASSWORD", TestHelper.TEST_USER_PASSWORD, "ARTEMIS_PERF_JOURNAL", "ALWAYS"))
+				.withReuse(false);
 	}
 
 	/**
@@ -95,7 +96,8 @@ public class TestHelper {
 	 */
 	@SuppressWarnings("resource")
 	public static GenericContainer<?> createRedisContainer() {
-		return new GenericContainer<>("redis:7.2.4-bookworm").withExposedPorts(6379).withCommand("redis-server", "--save", "60", "1", "--loglevel", "warning").withReuse(false);
+		return new GenericContainer<>("redis:7.2.4-bookworm").withExposedPorts(6379).withCommand("redis-server", "--save", "60", "1", "--loglevel", "warning")
+				.withReuse(false);
 	}
 
 	/**

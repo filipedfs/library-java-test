@@ -35,11 +35,11 @@ public class ContainerExtension implements BeforeAllCallback, AfterAllCallback {
 						final GenericContainer<?> container = (GenericContainer<?>) field.get(null);
 						container.start();
 						container.getExposedPorts().forEach((
-								boundPort) -> {
-							final Integer mappedPort = container.getMappedPort(boundPort);
-							System.setProperty(field.getName() + "_" + boundPort, mappedPort.toString());
+								exposedPort) -> {
+							final Integer mappedPort = container.getMappedPort(exposedPort);
+							String mappedPortPropertyName = field.getName() + "_" + exposedPort;
+							System.setProperty(mappedPortPropertyName, mappedPort.toString());
 						});
-						Thread.sleep(2 * 1000);
 					}
 					catch (final Exception exception) {
 						ContainerExtension.LOGGER.error("Error starting container.", exception);
@@ -47,6 +47,7 @@ public class ContainerExtension implements BeforeAllCallback, AfterAllCallback {
 				}
 			}
 		}
+		Thread.sleep(5 * 1000);
 	}
 
 	/**
