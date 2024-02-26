@@ -28,7 +28,7 @@ public class ContainerExtension implements BeforeAllCallback, AfterAllCallback {
 	@Override
 	public void beforeAll(
 			final ExtensionContext context) throws Exception {
-		for (final Field field : context.getTestClass().get().getDeclaredFields()) {
+		for (final Field field : context.getTestClass().get().getFields()) {
 			if (java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
 				if (field.getType().equals(GenericContainer.class)) {
 					try {
@@ -37,7 +37,7 @@ public class ContainerExtension implements BeforeAllCallback, AfterAllCallback {
 						container.getExposedPorts().forEach((
 								exposedPort) -> {
 							final Integer mappedPort = container.getMappedPort(exposedPort);
-							String mappedPortPropertyName = field.getName() + "_" + exposedPort;
+							final String mappedPortPropertyName = field.getName() + "_" + exposedPort;
 							System.setProperty(mappedPortPropertyName, mappedPort.toString());
 						});
 					}
@@ -59,7 +59,7 @@ public class ContainerExtension implements BeforeAllCallback, AfterAllCallback {
 	@Override
 	public void afterAll(
 			final ExtensionContext context) throws Exception {
-		for (final Field field : context.getTestClass().get().getDeclaredFields()) {
+		for (final Field field : context.getTestClass().get().getFields()) {
 			if (java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
 				if (field.getType().equals(GenericContainer.class)) {
 					try {
