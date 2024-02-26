@@ -175,7 +175,7 @@ public class TestHelperTest {
 	@Test
 	public void testPostgresContainer() throws Exception {
 		try (Connection connection = DriverManager.getConnection(
-				"jdbc:postgresql://" + System.getProperty("POSTGRES_CONTAINER_HOST") + ":5432/" + TestHelper.TEST_USER_NAME, TestHelper.TEST_USER_NAME,
+				"jdbc:postgresql://" + System.getProperty("POSTGRES_CONTAINER_IP") + ":5432/" + TestHelper.TEST_USER_NAME, TestHelper.TEST_USER_NAME,
 				TestHelper.TEST_USER_PASSWORD)) {
 			try (Statement statement = connection.createStatement()) {
 				Class.forName("org.postgresql.Driver");
@@ -183,9 +183,11 @@ public class TestHelperTest {
 				final ResultSet queryResult = statement.executeQuery(sql);
 				queryResult.next();
 				Assertions.assertEquals(10, queryResult.getInt(1));
-				Assertions.assertNotNull(System.getProperty("POSTGRES_CONTAINER_HOST"));
+				Assertions.assertNotNull(System.getProperty("POSTGRES_CONTAINER_IP"));
+				Assertions.assertNotNull(System.getProperty("POSTGRES_CONTAINER_HOSTNAME"));
 				Assertions.assertNotNull(System.getProperty("POSTGRES_CONTAINER_5432"));
-				System.out.println(System.getProperty("POSTGRES_CONTAINER_HOST"));
+				System.out.println(System.getProperty("POSTGRES_CONTAINER_IP"));
+				System.out.println(System.getProperty("POSTGRES_CONTAINER_HOSTNAME"));
 				System.out.println(System.getProperty("POSTGRES_CONTAINER_5432"));
 			}
 		}

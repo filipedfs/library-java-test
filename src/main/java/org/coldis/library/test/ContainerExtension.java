@@ -42,7 +42,8 @@ public class ContainerExtension implements BeforeAllCallback, AfterAllCallback {
 							System.setProperty(mappedPortPropertyName, mappedPort.toString());
 						});
 						// Sets the container host as system property.
-						System.setProperty(field.getName() + "_HOST", container.getContainerInfo().getConfig().getHostName());
+						System.setProperty(field.getName() + "_IP", container.getContainerInfo().getNetworkSettings().getIpAddress());
+						System.setProperty(field.getName() + "_HOSTNAME", container.getContainerInfo().getConfig().getHostName());
 					}
 					catch (final Exception exception) {
 						ContainerExtension.LOGGER.error("Error starting container.", exception);
