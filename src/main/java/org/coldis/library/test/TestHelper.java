@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -14,6 +15,7 @@ import org.coldis.library.helper.DateTimeHelper;
 import org.coldis.library.helper.ReflectionHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testcontainers.containers.GenericContainer;
 
 /**
  * Test helper.
@@ -56,6 +58,34 @@ public class TestHelper {
 	public static void cleanClock() {
 		// Sets back to the regular clock.
 		DateTimeHelper.setClock(TestHelper.REGULAR_CLOCK);
+	}
+
+	/**
+	 * Creates a Postgres container.
+	 */
+	@SuppressWarnings("resource")
+	public static GenericContainer<?> createPostgresContainer() {
+		return new GenericContainer<>("coldis/infrastructure-transactional-repository:5.0.1").withExposedPorts(5432)
+				.withEnv(Map.of("ENABLE_JSON_CAST", "true", "ENABLE_UNACCENT", "true", "POSTGRES_ADMIN_PASSWORD", "postgres", "POSTGRES_ADMIN_USER", "postgres",
+						"REPLICATOR_USER_NAME", "replicator", "REPLICATOR_USER_PASSWORD", "test", "POSTGRES_DEFAULT_USER", "test", "POSTGRES_DEFAULT_PASSWORD",
+						"test", "POSTGRES_DEFAULT_DATABASE", "test"));
+	}
+
+	/**
+	 * Creates an Artemis container.
+	 */
+	@SuppressWarnings("resource")
+	public static GenericContainer<?> createArtemisContainer() {
+		return new GenericContainer<>("coldis/infrastructure-messaging-service:2.16").withExposedPorts(8161, 61616)
+				.withEnv(Map.of("ARTEMIS_USERNAME", "test", "ARTEMIS_PASSWORD", "test", "ARTEMIS_PERF_JOURNAL", "ALWAYS"));
+	}
+
+	/**
+	 * Creates a Redis container.
+	 */
+	@SuppressWarnings("resource")
+	public static GenericContainer<?> createRedisContainer() {
+		return new GenericContainer<>("redis:7.2.4-bookworm").withExposedPorts(6379).withCommand("redis-server", "--save", "60", "1", "--loglevel", "warning");
 	}
 
 	/**
