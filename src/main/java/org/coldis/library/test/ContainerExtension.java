@@ -67,6 +67,7 @@ public class ContainerExtension implements BeforeAllCallback, AfterAllCallback {
 				if (field.getType().equals(GenericContainer.class)) {
 					try {
 						final GenericContainer<?> container = (GenericContainer<?>) field.get(null);
+						container.stop();
 						container.close();
 					}
 					catch (final Exception exception) {
