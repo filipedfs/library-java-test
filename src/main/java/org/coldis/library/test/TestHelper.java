@@ -28,6 +28,11 @@ public class TestHelper {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TestHelper.class);
 
 	/**
+	 * Very short wait time (milliseconds).
+	 */
+	public static final Integer VERY_SHORT_WAIT = 100;
+
+	/**
 	 * Short wait time (milliseconds).
 	 */
 	public static final Integer SHORT_WAIT = 500;
