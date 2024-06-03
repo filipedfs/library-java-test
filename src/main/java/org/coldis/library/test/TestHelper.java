@@ -91,7 +91,7 @@ public class TestHelper {
 	 */
 	@SuppressWarnings("resource")
 	public static GenericContainer<?> createArtemisContainer() {
-		return new GenericContainer<>("coldis/infrastructure-messaging-service:2.18").withExposedPorts(8161, 61616).withEnv(
+		return new GenericContainer<>("coldis/infrastructure-messaging-service:2.19").withExposedPorts(8161, 61616).withEnv(
 				Map.of("ARTEMIS_USERNAME", TestHelper.TEST_USER_NAME, "ARTEMIS_PASSWORD", TestHelper.TEST_USER_PASSWORD, "ARTEMIS_PERF_JOURNAL", "ALWAYS"));
 	}
 
