@@ -80,7 +80,7 @@ public class TestHelper {
 	 */
 	@SuppressWarnings("resource")
 	public static GenericContainer<?> createPostgresContainer() {
-		return new GenericContainer<>("coldis/infrastructure-transactional-repository:5.0.2").withExposedPorts(5432)
+		return new GenericContainer<>("coldis/infrastructure-transactional-repository:5.0.6").withExposedPorts(5432)
 				.withEnv(Map.of("ENABLE_JSON_CAST", "true", "ENABLE_UNACCENT", "true", "POSTGRES_ADMIN_PASSWORD", "postgres", "POSTGRES_ADMIN_USER", "postgres",
 						"REPLICATOR_USER_NAME", "replicator", "REPLICATOR_USER_PASSWORD", "replicator", "POSTGRES_DEFAULT_USER", TestHelper.TEST_USER_NAME,
 						"POSTGRES_DEFAULT_PASSWORD", TestHelper.TEST_USER_PASSWORD, "POSTGRES_DEFAULT_DATABASE", TestHelper.TEST_USER_NAME));
@@ -91,7 +91,7 @@ public class TestHelper {
 	 */
 	@SuppressWarnings("resource")
 	public static GenericContainer<?> createArtemisContainer() {
-		return new GenericContainer<>("coldis/infrastructure-messaging-service:2.17").withExposedPorts(8161, 61616).withEnv(
+		return new GenericContainer<>("coldis/infrastructure-messaging-service:2.21").withExposedPorts(8161, 61616).withEnv(
 				Map.of("ARTEMIS_USERNAME", TestHelper.TEST_USER_NAME, "ARTEMIS_PASSWORD", TestHelper.TEST_USER_PASSWORD, "ARTEMIS_PERF_JOURNAL", "ALWAYS"));
 	}
 
