@@ -53,6 +53,21 @@ public class TestHelper {
 	public static final Integer VERY_LONG_WAIT = 29 * 1000;
 
 	/**
+	 * Default CPU count.
+	 */
+	private static Long DEFAULT_CPU_COUNT = 1L;
+
+	/**
+	 * Default memory quota.
+	 */
+	private static Long DEFAULT_MEMORY_QUOTA = 1024L * 1024L * 1024L;
+
+	/**
+	 * Default disk quota.
+	 */
+	private static Long DEFAULT_DISK_QUOTA = 3 * 1024L * 1024L * 1024L;
+
+	/**
 	 * Regular clock.
 	 */
 	public static final Clock REGULAR_CLOCK = DateTimeHelper.getClock();
@@ -80,7 +95,10 @@ public class TestHelper {
 	 */
 	@SuppressWarnings("resource")
 	public static GenericContainer<?> createPostgresContainer() {
-		return new GenericContainer<>("coldis/infrastructure-transactional-repository:5.0.7").withExposedPorts(5432)
+		return new GenericContainer<>("coldis/infrastructure-transactional-repository:5.0.7")
+				.withCreateContainerCmdModifier(cmd -> cmd.getHostConfig().withCpuCount(TestHelper.DEFAULT_CPU_COUNT)
+						.withMemory(TestHelper.DEFAULT_MEMORY_QUOTA).withDiskQuota(TestHelper.DEFAULT_DISK_QUOTA))
+				.withExposedPorts(5432)
 				.withEnv(Map.of("ENABLE_JSON_CAST", "true", "ENABLE_UNACCENT", "true", "POSTGRES_ADMIN_PASSWORD", "postgres", "POSTGRES_ADMIN_USER", "postgres",
 						"REPLICATOR_USER_NAME", "replicator", "REPLICATOR_USER_PASSWORD", "replicator", "POSTGRES_DEFAULT_USER", TestHelper.TEST_USER_NAME,
 						"POSTGRES_DEFAULT_PASSWORD", TestHelper.TEST_USER_PASSWORD, "POSTGRES_DEFAULT_DATABASE", TestHelper.TEST_USER_NAME));
@@ -91,8 +109,11 @@ public class TestHelper {
 	 */
 	@SuppressWarnings("resource")
 	public static GenericContainer<?> createArtemisContainer() {
-		return new GenericContainer<>("coldis/infrastructure-messaging-service:2.22").withExposedPorts(8161, 61616).withEnv(
-				Map.of("ARTEMIS_USERNAME", TestHelper.TEST_USER_NAME, "ARTEMIS_PASSWORD", TestHelper.TEST_USER_PASSWORD, "ARTEMIS_PERF_JOURNAL", "ALWAYS"));
+		return new GenericContainer<>("coldis/infrastructure-messaging-service:2.22")
+				.withCreateContainerCmdModifier(cmd -> cmd.getHostConfig().withCpuCount(TestHelper.DEFAULT_CPU_COUNT)
+						.withMemory(TestHelper.DEFAULT_MEMORY_QUOTA).withDiskQuota(TestHelper.DEFAULT_DISK_QUOTA))
+				.withExposedPorts(8161, 61616).withEnv(Map.of("ARTEMIS_USERNAME", TestHelper.TEST_USER_NAME, "ARTEMIS_PASSWORD", TestHelper.TEST_USER_PASSWORD,
+						"ARTEMIS_PERF_JOURNAL", "ALWAYS"));
 	}
 
 	/**
@@ -100,7 +121,10 @@ public class TestHelper {
 	 */
 	@SuppressWarnings("resource")
 	public static GenericContainer<?> createRedisContainer() {
-		return new GenericContainer<>("redis:7.2.4-bookworm").withExposedPorts(6379).withCommand("redis-server", "--save", "60", "1", "--loglevel", "warning");
+		return new GenericContainer<>("redis:7.2.4-bookworm")
+				.withCreateContainerCmdModifier(cmd -> cmd.getHostConfig().withCpuCount(TestHelper.DEFAULT_CPU_COUNT)
+						.withMemory(TestHelper.DEFAULT_MEMORY_QUOTA).withDiskQuota(TestHelper.DEFAULT_DISK_QUOTA))
+				.withExposedPorts(6379).withCommand("redis-server", "--save", "60", "1", "--loglevel", "warning");
 	}
 
 	/**
