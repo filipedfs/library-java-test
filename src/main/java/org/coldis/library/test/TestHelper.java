@@ -121,7 +121,7 @@ public class TestHelper {
 	 */
 	@SuppressWarnings("resource")
 	public static GenericContainer<?> createRedisContainer() {
-		return new GenericContainer<>("redis:7.2.4-bookworm")
+		return new GenericContainer<>("redis:7.4.0-bookworm")
 				.withCreateContainerCmdModifier(cmd -> cmd.getHostConfig().withCpuCount(TestHelper.DEFAULT_CPU_COUNT)
 						.withMemory(TestHelper.DEFAULT_MEMORY_QUOTA).withDiskQuota(TestHelper.DEFAULT_DISK_QUOTA))
 				.withExposedPorts(6379).withCommand("redis-server", "--save", "60", "1", "--loglevel", "warning");
