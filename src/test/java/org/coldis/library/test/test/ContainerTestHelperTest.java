@@ -4,25 +4,29 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.List;
 
+import org.coldis.library.test.SpringTestHelper;
+import org.coldis.library.test.StartTestWithContainerExtension;
+import org.coldis.library.test.StopTestWithContainerExtension;
 import org.coldis.library.test.TestHelper;
 import org.coldis.library.test.TestWithContainer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.testcontainers.containers.GenericContainer;
 
 /**
  * Test helper test.
  */
 @TestWithContainer(parallel = true)
-public class ContainerTestHelperTest {
-
-	/**
-	 * Test data.
-	 */
-	private static final List<TestClass> COMPLETE_TEST_DATA = List.of(new TestClass("1", 1l, new TestClass("1", 1L, null)),
-			new TestClass("2", 2l, new TestClass("2", 2L, null)));
+@ExtendWith(value = { StartTestWithContainerExtension.class })
+@SpringBootTest(
+		classes = SpringTestApplication.class,
+		webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
+)
+@ExtendWith(value = { StopTestWithContainerExtension.class })
+public class ContainerTestHelperTest extends SpringTestHelper {
 
 	/**
 	 * Postgres container.
@@ -59,6 +63,17 @@ public class ContainerTestHelperTest {
 				System.out.println(System.getProperty("POSTGRES_CONTAINER_5432"));
 			}
 		}
+	}
+
+	/** Tests updating the sequence to random. */
+	@Test
+	public void testChangeSequenceToRandom() {
+		final String sequenceName = "test_sequence";
+		this.jdbcTemplate.update("CREATE SEQUENCE " + sequenceName);
+		this.changeSequenceToRandom(sequenceName);
+		final Long sequenceValue = this.jdbcTemplate.queryForObject("SELECT nextval(?)", Long.class, sequenceName);
+		Assertions.assertNotNull(sequenceValue);
+		Assertions.assertTrue(sequenceValue > 0);
 	}
 
 }

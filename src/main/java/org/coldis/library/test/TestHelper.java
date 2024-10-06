@@ -14,6 +14,8 @@ import java.util.function.Supplier;
 import org.apache.commons.collections4.CollectionUtils;
 import org.coldis.library.helper.DateTimeHelper;
 import org.coldis.library.helper.ReflectionHelper;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
@@ -22,6 +24,7 @@ import org.testcontainers.containers.wait.strategy.Wait;
 /**
  * Test helper.
  */
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestHelper {
 
 	/**
@@ -105,8 +108,7 @@ public class TestHelper {
 						"REPLICATOR_USER_NAME", "replicator", "REPLICATOR_USER_PASSWORD", "replicator", "POSTGRES_DEFAULT_USER", TestHelper.TEST_USER_NAME,
 						"POSTGRES_DEFAULT_PASSWORD", TestHelper.TEST_USER_PASSWORD, "POSTGRES_DEFAULT_DATABASE", TestHelper.TEST_USER_NAME, "MAX_CONNECTIONS",
 						"50"))
-				.waitingFor(Wait.forLogMessage(".*Database started and configured.*", 1).withStartupTimeout(Duration.ofMinutes(2)))
-				.withStartupAttempts(3);
+				.waitingFor(Wait.forLogMessage(".*Database started and configured.*", 1).withStartupTimeout(Duration.ofMinutes(2))).withStartupAttempts(3);
 	}
 
 	/**
