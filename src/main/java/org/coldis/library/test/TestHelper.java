@@ -101,14 +101,14 @@ public class TestHelper {
 	@SuppressWarnings("resource")
 	public static GenericContainer<?> createPostgresContainer() {
 		return new GenericContainer<>("coldis/infrastructure-transactional-repository:5.0.7")
-				.withCreateContainerCmdModifier(cmd -> cmd.getHostConfig().withCpuCount(TestHelper.DEFAULT_CPU_COUNT * 2)
+				.withCreateContainerCmdModifier(cmd -> cmd.getHostConfig().withCpuCount(TestHelper.DEFAULT_CPU_COUNT)
 						.withMemory(TestHelper.DEFAULT_MEMORY_QUOTA).withDiskQuota(TestHelper.DEFAULT_DISK_QUOTA))
 				.withExposedPorts(5432)
 				.withEnv(Map.of("ENABLE_JSON_CAST", "true", "ENABLE_UNACCENT", "true", "POSTGRES_ADMIN_PASSWORD", "postgres", "POSTGRES_ADMIN_USER", "postgres",
 						"REPLICATOR_USER_NAME", "replicator", "REPLICATOR_USER_PASSWORD", "replicator", "POSTGRES_DEFAULT_USER", TestHelper.TEST_USER_NAME,
 						"POSTGRES_DEFAULT_PASSWORD", TestHelper.TEST_USER_PASSWORD, "POSTGRES_DEFAULT_DATABASE", TestHelper.TEST_USER_NAME, "MAX_CONNECTIONS",
 						"50"))
-				.waitingFor(Wait.forLogMessage(".*Database started and configured.*", 1).withStartupTimeout(Duration.ofMinutes(2))).withStartupAttempts(3);
+				.waitingFor(Wait.forLogMessage(".*Database started and configured.*", 1).withStartupTimeout(Duration.ofMinutes(3))).withStartupAttempts(3);
 	}
 
 	/**
@@ -121,7 +121,7 @@ public class TestHelper {
 						.withMemory(TestHelper.DEFAULT_MEMORY_QUOTA).withDiskQuota(TestHelper.DEFAULT_DISK_QUOTA))
 				.withExposedPorts(8161, 61616).withEnv(Map.of("ARTEMIS_USERNAME", TestHelper.TEST_USER_NAME, "ARTEMIS_PASSWORD", TestHelper.TEST_USER_PASSWORD,
 						"ARTEMIS_PERF_JOURNAL", "ALWAYS"))
-				.waitingFor(Wait.forListeningPort().withStartupTimeout(Duration.ofMinutes(2))).withStartupAttempts(3);
+				.waitingFor(Wait.forListeningPort().withStartupTimeout(Duration.ofMinutes(3))).withStartupAttempts(3);
 	}
 
 	/**
@@ -133,7 +133,7 @@ public class TestHelper {
 				.withCreateContainerCmdModifier(cmd -> cmd.getHostConfig().withCpuCount(TestHelper.DEFAULT_CPU_COUNT)
 						.withMemory(TestHelper.DEFAULT_MEMORY_QUOTA).withDiskQuota(TestHelper.DEFAULT_DISK_QUOTA))
 				.withExposedPorts(6379).withCommand("redis-server", "--save", "60", "1", "--loglevel", "warning")
-				.waitingFor(Wait.forListeningPort().withStartupTimeout(Duration.ofMinutes(2))).withStartupAttempts(3);
+				.waitingFor(Wait.forListeningPort().withStartupTimeout(Duration.ofMinutes(3))).withStartupAttempts(3);
 	}
 
 	/**
