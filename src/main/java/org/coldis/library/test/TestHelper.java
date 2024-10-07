@@ -2,6 +2,7 @@ package org.coldis.library.test;
 
 import java.time.Clock;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -105,6 +106,26 @@ public class TestHelper {
 	public static void cleanClock() {
 		// Sets back to the regular clock.
 		DateTimeHelper.setClock(TestHelper.REGULAR_CLOCK);
+	}
+
+	/**
+	 * Moves the clock to a specific date time.
+	 *
+	 * @param dateTime Date time.
+	 */
+	public static void moveClockTo(
+			final LocalDateTime dateTime) {
+		DateTimeHelper.setClock(Clock.offset(DateTimeHelper.getClock(), Duration.between(DateTimeHelper.getCurrentLocalDateTime(), dateTime)));
+	}
+
+	/**
+	 * Moves clock by adding a duration.
+	 *
+	 * @param duration Duration to be added to the clock.
+	 */
+	public static void moveClockBy(
+			final Duration duration) {
+		DateTimeHelper.setClock(Clock.offset(DateTimeHelper.getClock(), duration));
 	}
 
 	/**

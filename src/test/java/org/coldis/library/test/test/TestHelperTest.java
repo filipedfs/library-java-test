@@ -1,10 +1,13 @@
 package org.coldis.library.test.test;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 
 import org.coldis.library.exception.BusinessException;
 import org.coldis.library.exception.IntegrationException;
+import org.coldis.library.helper.DateTimeHelper;
 import org.coldis.library.test.TestHelper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -12,7 +15,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Test helper test.
  */
-public class TestHelperTest {
+public class TestHelperTest extends TestHelper {
 
 	/**
 	 * Test data.
@@ -144,6 +147,23 @@ public class TestHelperTest {
 			Assertions.assertNotNull(testData.getTest3().getTest2());
 
 		}
+	}
+
+	/** Tests moving the clock forward. */
+	@Test
+	public void testMoveClockForward() {
+		// Makes sure the clock has moved forward.
+		LocalDateTime startTime = DateTimeHelper.getCurrentLocalDateTime();
+		TestHelper.moveClockTo(startTime.plusDays(1));
+		Assertions.assertTrue(startTime.plusDays(1).isBefore(DateTimeHelper.getCurrentLocalDateTime()));
+		Assertions.assertTrue(startTime.plusDays(1).plusMinutes(1).isAfter(DateTimeHelper.getCurrentLocalDateTime()));
+		TestHelper.cleanClock();
+
+		// Makes sure the clock has moved forward.
+		startTime = DateTimeHelper.getCurrentLocalDateTime();
+		TestHelper.moveClockBy(Duration.ofDays(1));
+		Assertions.assertTrue(startTime.plusDays(1).isBefore(DateTimeHelper.getCurrentLocalDateTime()));
+		Assertions.assertTrue(startTime.plusDays(1).plusMinutes(1).isAfter(DateTimeHelper.getCurrentLocalDateTime()));
 	}
 
 }
