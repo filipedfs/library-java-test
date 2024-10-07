@@ -12,6 +12,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.coldis.library.helper.DateTimeHelper;
 import org.coldis.library.helper.ReflectionHelper;
 import org.junit.jupiter.api.MethodOrderer;
@@ -86,6 +87,16 @@ public class TestHelper {
 	 * Test user password.
 	 */
 	public static String TEST_USER_PASSWORD = "test";
+
+	/**
+	 * Gets the test fork number.
+	 *
+	 * @return The test fork number.
+	 */
+	public static Integer getTestForkNumber() {
+		final Integer forkNumber = (NumberUtils.isParsable(System.getProperty("FORK_NUMBER")) ? (Integer.parseInt(System.getProperty("FORK_NUMBER"))) : 1);
+		return forkNumber;
+	}
 
 	/**
 	 * Cleans after each test.
