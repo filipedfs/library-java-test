@@ -102,10 +102,17 @@ public class TestHelper {
 	/**
 	 * Cleans after each test.
 	 */
-	@BeforeEach
 	public static void cleanClock() {
 		// Sets back to the regular clock.
 		DateTimeHelper.setClock(TestHelper.REGULAR_CLOCK);
+	}
+
+	/**
+	 * Cleans after each test.
+	 */
+	@BeforeEach
+	public void cleanClockBeforeTest() {
+		TestHelper.cleanClock();
 	}
 
 	/**
