@@ -15,6 +15,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.coldis.library.helper.DateTimeHelper;
 import org.coldis.library.helper.ReflectionHelper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.slf4j.Logger;
@@ -101,6 +102,7 @@ public class TestHelper {
 	/**
 	 * Cleans after each test.
 	 */
+	@BeforeEach
 	public static void cleanClock() {
 		// Sets back to the regular clock.
 		DateTimeHelper.setClock(TestHelper.REGULAR_CLOCK);
