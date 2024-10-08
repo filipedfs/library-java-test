@@ -162,7 +162,7 @@ public class TestHelper {
 						.withMemory(TestHelper.DEFAULT_MEMORY_QUOTA).withDiskQuota(TestHelper.DEFAULT_DISK_QUOTA))
 				.withExposedPorts(8161, 61616).withEnv(Map.of("ARTEMIS_USERNAME", TestHelper.TEST_USER_NAME, "ARTEMIS_PASSWORD", TestHelper.TEST_USER_PASSWORD,
 						"ARTEMIS_PERF_JOURNAL", "ALWAYS"))
-				.waitingFor(Wait.forListeningPort().withStartupTimeout(Duration.ofMinutes(3))).withStartupAttempts(3);
+				.waitingFor(Wait.forLogMessage(".*AMQ241004.*", 1).withStartupTimeout(Duration.ofMinutes(3))).withStartupAttempts(3);
 	}
 
 	/**
