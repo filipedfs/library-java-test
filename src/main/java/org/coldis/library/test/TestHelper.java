@@ -63,17 +63,17 @@ public class TestHelper {
 	/**
 	 * Default CPU count.
 	 */
-	private static Long DEFAULT_CPU_COUNT = 1L;
+	private static Long DEFAULT_CPU_QUOTA = 2L;
 
 	/**
 	 * Default memory quota.
 	 */
-	private static Long DEFAULT_MEMORY_QUOTA = 1024L * 1024L * 1024L;
+	private static Long DEFAULT_MEMORY_QUOTA = 2L * 1024L * 1024L * 1024L;
 
 	/**
 	 * Default disk quota.
 	 */
-	private static Long DEFAULT_DISK_QUOTA = 5L * 1024L * 1024L * 1024L;
+	private static Long DEFAULT_DISK_QUOTA = 10L * 1024L * 1024L * 1024L;
 
 	/**
 	 * Regular clock.
@@ -142,7 +142,7 @@ public class TestHelper {
 	@SuppressWarnings("resource")
 	public static GenericContainer<?> createPostgresContainer() {
 		return new GenericContainer<>("coldis/infrastructure-transactional-repository:5.0.9")
-				.withCreateContainerCmdModifier(cmd -> cmd.getHostConfig().withCpuCount(TestHelper.DEFAULT_CPU_COUNT)
+				.withCreateContainerCmdModifier(cmd -> cmd.getHostConfig().withCpuCount(TestHelper.DEFAULT_CPU_QUOTA)
 						.withMemory(TestHelper.DEFAULT_MEMORY_QUOTA).withDiskQuota(TestHelper.DEFAULT_DISK_QUOTA))
 				.withExposedPorts(5432)
 				.withEnv(Map.of("ENABLE_JSON_CAST", "true", "ENABLE_UNACCENT", "true", "POSTGRES_ADMIN_PASSWORD", "postgres", "POSTGRES_ADMIN_USER", "postgres",
@@ -158,7 +158,7 @@ public class TestHelper {
 	@SuppressWarnings("resource")
 	public static GenericContainer<?> createArtemisContainer() {
 		return new GenericContainer<>("coldis/infrastructure-messaging-service:2.26")
-				.withCreateContainerCmdModifier(cmd -> cmd.getHostConfig().withCpuCount(TestHelper.DEFAULT_CPU_COUNT)
+				.withCreateContainerCmdModifier(cmd -> cmd.getHostConfig().withCpuCount(TestHelper.DEFAULT_CPU_QUOTA)
 						.withMemory(TestHelper.DEFAULT_MEMORY_QUOTA).withDiskQuota(TestHelper.DEFAULT_DISK_QUOTA))
 				.withExposedPorts(8161, 61616).withEnv(Map.of("ARTEMIS_USERNAME", TestHelper.TEST_USER_NAME, "ARTEMIS_PASSWORD", TestHelper.TEST_USER_PASSWORD,
 						"ARTEMIS_PERF_JOURNAL", "ALWAYS"))
@@ -171,7 +171,7 @@ public class TestHelper {
 	@SuppressWarnings("resource")
 	public static GenericContainer<?> createRedisContainer() {
 		return new GenericContainer<>("redis:7.4.1-bookworm")
-				.withCreateContainerCmdModifier(cmd -> cmd.getHostConfig().withCpuCount(TestHelper.DEFAULT_CPU_COUNT)
+				.withCreateContainerCmdModifier(cmd -> cmd.getHostConfig().withCpuCount(TestHelper.DEFAULT_CPU_QUOTA)
 						.withMemory(TestHelper.DEFAULT_MEMORY_QUOTA).withDiskQuota(TestHelper.DEFAULT_DISK_QUOTA))
 				.withExposedPorts(6379).withCommand("redis-server", "--save", "60", "1", "--loglevel", "warning")
 				.waitingFor(Wait.forListeningPort().withStartupTimeout(Duration.ofMinutes(3))).withStartupAttempts(3);
