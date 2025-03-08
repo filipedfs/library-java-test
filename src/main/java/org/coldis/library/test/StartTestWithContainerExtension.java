@@ -35,9 +35,9 @@ public class StartTestWithContainerExtension implements BeforeAllCallback {
 		final Executor executor = TestWithContainerExtensionHelper.shouldStartTestContainersInParallel(testClass) ? Executors.newWorkStealingPool()
 				: Executors.newSingleThreadExecutor();
 		@SuppressWarnings("unchecked")
-		final CompletableFuture<Void>[] containersFieldsJobs = containersFieldsFromTests.stream()
-				.map(field -> (CompletableFuture.runAsync((() -> TestWithContainerExtensionHelper.startTestContainer(field)), executor)))
-				.toArray(CompletableFuture[]::new);
+		final CompletableFuture<Void>[] containersFieldsJobs = containersFieldsFromTests.stream().map(field -> (CompletableFuture.runAsync((() -> {
+			TestWithContainerExtensionHelper.startTestContainer(field);
+		}), executor))).toArray(CompletableFuture[]::new);
 		CompletableFuture.allOf(containersFieldsJobs).get();
 	}
 

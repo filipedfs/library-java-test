@@ -96,7 +96,9 @@ public class TestHelper {
 	 * @return The test fork number.
 	 */
 	public static Integer getTestForkNumber() {
-		final Integer forkNumber = (NumberUtils.isParsable(System.getProperty("surfire.forkNumber")) ? (Integer.parseInt(System.getProperty("surfire.forkNumber"))) : 1);
+		final Integer forkNumber = (NumberUtils.isParsable(System.getProperty("surfire.forkNumber"))
+				? (Integer.parseInt(System.getProperty("surfire.forkNumber")))
+				: 1);
 		return forkNumber;
 	}
 
@@ -149,7 +151,11 @@ public class TestHelper {
 						"REPLICATOR_USER_NAME", "replicator", "REPLICATOR_USER_PASSWORD", "replicator", "POSTGRES_DEFAULT_USER", TestHelper.TEST_USER_NAME,
 						"POSTGRES_DEFAULT_PASSWORD", TestHelper.TEST_USER_PASSWORD, "POSTGRES_DEFAULT_DATABASE", TestHelper.TEST_USER_NAME, "MAX_CONNECTIONS",
 						"50"))
-				.waitingFor(Wait.forLogMessage(".*Database started and configured.*", 1).withStartupTimeout(Duration.ofMinutes(3))).withStartupAttempts(3);
+				.waitingFor(Wait
+						.forSuccessfulCommand(
+								"PGPASSWORD=\"" + TestHelper.TEST_USER_PASSWORD + "\" psql -c 'SELECT 1;' -U \"" + TestHelper.TEST_USER_NAME + "\"")
+						.withStartupTimeout(Duration.ofMinutes(3)))
+				.withStartupAttempts(3);
 	}
 
 	/**
