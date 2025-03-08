@@ -96,7 +96,7 @@ public class TestHelper {
 	 * @return The test fork number.
 	 */
 	public static Integer getTestForkNumber() {
-		final Integer forkNumber = (NumberUtils.isParsable(System.getProperty("FORK_NUMBER")) ? (Integer.parseInt(System.getProperty("FORK_NUMBER"))) : 1);
+		final Integer forkNumber = (NumberUtils.isParsable(System.getProperty("surfire.forkNumber")) ? (Integer.parseInt(System.getProperty("surfire.forkNumber"))) : 1);
 		return forkNumber;
 	}
 
