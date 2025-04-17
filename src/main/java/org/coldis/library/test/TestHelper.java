@@ -96,9 +96,7 @@ public class TestHelper {
 	 * @return The test fork number.
 	 */
 	public static Integer getTestForkNumber() {
-		final Integer forkNumber = (NumberUtils.isParsable(System.getProperty("FORK_NUMBER"))
-				? (Integer.parseInt(System.getProperty("FORK_NUMBER")))
-				: 1);
+		final Integer forkNumber = (NumberUtils.isParsable(System.getProperty("FORK_NUMBER")) ? (Integer.parseInt(System.getProperty("FORK_NUMBER"))) : 1);
 		return forkNumber;
 	}
 
@@ -166,7 +164,8 @@ public class TestHelper {
 		return new GenericContainer<>("coldis/infrastructure-messaging-service:2.27")
 				.withCreateContainerCmdModifier(cmd -> cmd.getHostConfig().withCpuCount(TestHelper.DEFAULT_CPU_QUOTA)
 						.withMemory(TestHelper.DEFAULT_MEMORY_QUOTA).withDiskQuota(TestHelper.DEFAULT_DISK_QUOTA))
-				.withExposedPorts(8161, 61616).withEnv(Map.of("ARTEMIS_USERNAME", TestHelper.TEST_USER_NAME, "ARTEMIS_PASSWORD", TestHelper.TEST_USER_PASSWORD,
+				.withExposedPorts(8161, 61616)
+				.withEnv(Map.of("JVM_USE_TUNED_OPTS", "false", "ARTEMIS_USERNAME", TestHelper.TEST_USER_NAME, "ARTEMIS_PASSWORD", TestHelper.TEST_USER_PASSWORD,
 						"ARTEMIS_PERF_JOURNAL", "ALWAYS"))
 				.waitingFor(Wait.forLogMessage(".*AMQ241004.*", 1).withStartupTimeout(Duration.ofMinutes(3))).withStartupAttempts(3);
 	}
