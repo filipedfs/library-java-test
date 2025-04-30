@@ -5,6 +5,8 @@ import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 
@@ -12,6 +14,11 @@ import org.springframework.test.annotation.DirtiesContext;
  * Spring test helper.
  */
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@PropertySource(
+		value = { "classpath:default-test.properties" },
+		ignoreResourceNotFound = true
+)
+
 public class SpringTestHelper extends TestHelper {
 
 	/**
