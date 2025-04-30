@@ -14,11 +14,6 @@ import org.springframework.test.annotation.DirtiesContext;
  * Spring test helper.
  */
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-@PropertySource(
-		value = { "classpath:default-test.properties" },
-		ignoreResourceNotFound = true
-)
-
 public class SpringTestHelper extends TestHelper {
 
 	/**
