@@ -73,7 +73,7 @@ public class TestHelper {
 	/**
 	 * Default memory quota.
 	 */
-	private static Long DEFAULT_MEMORY_QUOTA = DEFAULT_MEMORY_RESERVATION_QUOTA * 4;
+	private static Long DEFAULT_MEMORY_QUOTA = TestHelper.DEFAULT_MEMORY_RESERVATION_QUOTA * 4;
 
 	/**
 	 * Default disk quota.
@@ -112,7 +112,7 @@ public class TestHelper {
 	 */
 	public static Long getCpuQuota() {
 		final Long cpuQuota = (NumberUtils.isParsable(System.getProperty("CPU_QUOTA")) ? (Long.parseLong(System.getProperty("CPU_QUOTA")))
-				: TestHelper.getCpuQuota());
+				: TestHelper.DEFAULT_CPU_QUOTA);
 		return cpuQuota;
 	}
 
@@ -170,7 +170,7 @@ public class TestHelper {
 
 		return memoryQuota;
 	}
-	
+
 	/**
 	 * Gets the test disk quota.
 	 *
@@ -261,8 +261,8 @@ public class TestHelper {
 	@SuppressWarnings("resource")
 	public static GenericContainer<?> createArtemisContainer() {
 		return new GenericContainer<>("coldis/infrastructure-messaging-service:2.27")
-				.withCreateContainerCmdModifier(cmd -> cmd.getHostConfig().withCpuCount(TestHelper.getCpuQuota())
-						.withMemoryReservation(TestHelper.getMemoryReservationQuota())
+				.withCreateContainerCmdModifier(
+						cmd -> cmd.getHostConfig().withCpuCount(TestHelper.getCpuQuota()).withMemoryReservation(TestHelper.getMemoryReservationQuota())
 								.withMemory(TestHelper.getMemoryQuota()).withDiskQuota(TestHelper.getDiskQuota()))
 				.withExposedPorts(8161, 61616)
 				.withEnv(Map.of("JDK_USE_TUNED_OPTS", "false", "ARTEMIS_USERNAME", TestHelper.TEST_USER_NAME, "ARTEMIS_PASSWORD", TestHelper.TEST_USER_PASSWORD,
@@ -276,8 +276,8 @@ public class TestHelper {
 	@SuppressWarnings("resource")
 	public static GenericContainer<?> createRedisContainer() {
 		return new GenericContainer<>("redis:7.4.1-bookworm")
-				.withCreateContainerCmdModifier(cmd -> cmd.getHostConfig().withCpuCount(TestHelper.getCpuQuota())
-						.withMemoryReservation(TestHelper.getMemoryReservationQuota())
+				.withCreateContainerCmdModifier(
+						cmd -> cmd.getHostConfig().withCpuCount(TestHelper.getCpuQuota()).withMemoryReservation(TestHelper.getMemoryReservationQuota())
 								.withMemory(TestHelper.getMemoryQuota()).withDiskQuota(TestHelper.getDiskQuota()))
 				.withExposedPorts(6379).withCommand("redis-server", "--save", "60", "1", "--loglevel", "warning")
 				.waitingFor(Wait.forListeningPort().withStartupTimeout(Duration.ofMinutes(3))).withStartupAttempts(3);
