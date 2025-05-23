@@ -101,6 +101,41 @@ public class TestHelper {
 	}
 
 	/**
+	 * Gets the test cpu quota.
+	 *
+	 * @return The test cpu quota.
+	 */
+	public static Long getCpuQuota() {
+		final Long cpuQuota = (NumberUtils.isParsable(System.getProperty("CPU_QUOTA")) ? (Long.parseLong(System.getProperty("CPU_QUOTA"))) : DEFAULT_CPU_QUOTA);
+		return cpuQuota;
+	}
+
+	/**
+	 * Gets the test memory quota.
+	 *
+	 * @return The test memory quota.
+	 */
+	public static Long getMemoryQuota() {
+		String rawMemoryQuota = System.getProperty("MEMORY_QUOTA");
+
+		try {
+			if (rawMemoryQuota != null) {
+				rawMemoryQuota = rawMemoryQuota.trim().toLowerCase();
+				if (rawMemoryQuota.endsWith("g")) {
+					return Long.parseLong(rawMemoryQuota.substring(0, rawMemoryQuota.length() - 1)) * 1024 * 1024 * 1024;
+				}
+				if (rawMemoryQuota.endsWith("m")) {
+					return Long.parseLong(rawMemoryQuota.substring(0, rawMemoryQuota.length() - 1)) * 1024 * 1024;
+				}
+			}
+		}
+		catch (NumberFormatException ignored) {
+		}
+
+		return DEFAULT_MEMORY_QUOTA;
+	}
+
+	/**
 	 * Cleans after each test.
 	 */
 	public static void cleanClock() {
@@ -142,8 +177,8 @@ public class TestHelper {
 	@SuppressWarnings("resource")
 	public static GenericContainer<?> createPostgresContainer() {
 		return new GenericContainer<>("coldis/infrastructure-transactional-repository:5.0.9")
-				.withCreateContainerCmdModifier(cmd -> cmd.getHostConfig().withCpuCount(TestHelper.DEFAULT_CPU_QUOTA)
-						.withMemory(TestHelper.DEFAULT_MEMORY_QUOTA).withDiskQuota(TestHelper.DEFAULT_DISK_QUOTA))
+				.withCreateContainerCmdModifier(cmd -> cmd.getHostConfig().withCpuCount(getCpuQuota())
+						.withMemory(getMemoryQuota()).withDiskQuota(TestHelper.DEFAULT_DISK_QUOTA))
 				.withExposedPorts(5432)
 				.withEnv(Map.of("ENABLE_JSON_CAST", "true", "ENABLE_UNACCENT", "true", "POSTGRES_ADMIN_PASSWORD", "postgres", "POSTGRES_ADMIN_USER", "postgres",
 						"REPLICATOR_USER_NAME", "replicator", "REPLICATOR_USER_PASSWORD", "replicator", "POSTGRES_DEFAULT_USER", TestHelper.TEST_USER_NAME,
