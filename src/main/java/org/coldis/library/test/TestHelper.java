@@ -68,7 +68,12 @@ public class TestHelper {
 	/**
 	 * Default memory quota.
 	 */
-	private static Long DEFAULT_MEMORY_QUOTA = 2L * 1024L * 1024L * 1024L;
+	private static Long DEFAULT_MEMORY_RESERVATION_QUOTA = 1L * 1024L * 1024L * 1024L;
+
+	/**
+	 * Default memory quota.
+	 */
+	private static Long DEFAULT_MEMORY_QUOTA = DEFAULT_MEMORY_RESERVATION_QUOTA * 4;
 
 	/**
 	 * Default disk quota.
@@ -107,8 +112,36 @@ public class TestHelper {
 	 */
 	public static Long getCpuQuota() {
 		final Long cpuQuota = (NumberUtils.isParsable(System.getProperty("CPU_QUOTA")) ? (Long.parseLong(System.getProperty("CPU_QUOTA")))
-				: TestHelper.DEFAULT_CPU_QUOTA);
+				: TestHelper.getCpuQuota());
 		return cpuQuota;
+	}
+
+	/**
+	 * Gets the test memoryReservation quota.
+	 *
+	 * @return The test memoryReservation quota.
+	 */
+	public static Long getMemoryReservationQuota() {
+		String rawMemoryReservationQuota = System.getProperty("MEMORY_RESERVATION_QUOTA");
+		Long memoryReservationQuota = TestHelper.DEFAULT_MEMORY_RESERVATION_QUOTA;
+
+		try {
+			if (rawMemoryReservationQuota != null) {
+				rawMemoryReservationQuota = rawMemoryReservationQuota.trim().toLowerCase();
+				if (rawMemoryReservationQuota.endsWith("g")) {
+					memoryReservationQuota = Long.parseLong(rawMemoryReservationQuota.substring(0, rawMemoryReservationQuota.length() - 1)) * 1024 * 1024
+							* 1024;
+				}
+				if (rawMemoryReservationQuota.endsWith("m")) {
+					memoryReservationQuota = Long.parseLong(rawMemoryReservationQuota.substring(0, rawMemoryReservationQuota.length() - 1)) * 1024 * 1024;
+				}
+			}
+		}
+		catch (final NumberFormatException ignored) {
+			TestHelper.LOGGER.warn("Invalid memory reservation quota format: " + rawMemoryReservationQuota);
+		}
+
+		return memoryReservationQuota;
 	}
 
 	/**
@@ -136,6 +169,33 @@ public class TestHelper {
 		}
 
 		return memoryQuota;
+	}
+	
+	/**
+	 * Gets the test disk quota.
+	 *
+	 * @return The test disk quota.
+	 */
+	public static Long getDiskQuota() {
+		String rawDiskQuota = System.getProperty("DISK_QUOTA");
+		Long diskQuota = TestHelper.DEFAULT_DISK_QUOTA;
+
+		try {
+			if (rawDiskQuota != null) {
+				rawDiskQuota = rawDiskQuota.trim().toLowerCase();
+				if (rawDiskQuota.endsWith("g")) {
+					diskQuota = Long.parseLong(rawDiskQuota.substring(0, rawDiskQuota.length() - 1)) * 1024 * 1024 * 1024;
+				}
+				if (rawDiskQuota.endsWith("m")) {
+					diskQuota = Long.parseLong(rawDiskQuota.substring(0, rawDiskQuota.length() - 1)) * 1024 * 1024;
+				}
+			}
+		}
+		catch (final NumberFormatException ignored) {
+			TestHelper.LOGGER.warn("Invalid disk quota format: " + rawDiskQuota);
+		}
+
+		return diskQuota;
 	}
 
 	/**
@@ -180,8 +240,9 @@ public class TestHelper {
 	@SuppressWarnings("resource")
 	public static GenericContainer<?> createPostgresContainer() {
 		return new GenericContainer<>("coldis/infrastructure-transactional-repository:5.0.9")
-				.withCreateContainerCmdModifier(cmd -> cmd.getHostConfig().withCpuCount(TestHelper.getCpuQuota()).withMemory(TestHelper.getMemoryQuota())
-						.withDiskQuota(TestHelper.DEFAULT_DISK_QUOTA))
+				.withCreateContainerCmdModifier(
+						cmd -> cmd.getHostConfig().withCpuCount(TestHelper.getCpuQuota()).withMemoryReservation(TestHelper.getMemoryReservationQuota())
+								.withMemory(TestHelper.getMemoryQuota()).withDiskQuota(TestHelper.getDiskQuota()))
 				.withExposedPorts(5432)
 				.withEnv(Map.of("ENABLE_JSON_CAST", "true", "ENABLE_UNACCENT", "true", "POSTGRES_ADMIN_PASSWORD", "postgres", "POSTGRES_ADMIN_USER", "postgres",
 						"REPLICATOR_USER_NAME", "replicator", "REPLICATOR_USER_PASSWORD", "replicator", "POSTGRES_DEFAULT_USER", TestHelper.TEST_USER_NAME,
@@ -200,8 +261,9 @@ public class TestHelper {
 	@SuppressWarnings("resource")
 	public static GenericContainer<?> createArtemisContainer() {
 		return new GenericContainer<>("coldis/infrastructure-messaging-service:2.27")
-				.withCreateContainerCmdModifier(cmd -> cmd.getHostConfig().withCpuCount(TestHelper.DEFAULT_CPU_QUOTA)
-						.withMemory(TestHelper.DEFAULT_MEMORY_QUOTA).withDiskQuota(TestHelper.DEFAULT_DISK_QUOTA))
+				.withCreateContainerCmdModifier(cmd -> cmd.getHostConfig().withCpuCount(TestHelper.getCpuQuota())
+						.withMemoryReservation(TestHelper.getMemoryReservationQuota())
+								.withMemory(TestHelper.getMemoryQuota()).withDiskQuota(TestHelper.getDiskQuota()))
 				.withExposedPorts(8161, 61616)
 				.withEnv(Map.of("JDK_USE_TUNED_OPTS", "false", "ARTEMIS_USERNAME", TestHelper.TEST_USER_NAME, "ARTEMIS_PASSWORD", TestHelper.TEST_USER_PASSWORD,
 						"ARTEMIS_PERF_JOURNAL", "ALWAYS"))
@@ -214,8 +276,9 @@ public class TestHelper {
 	@SuppressWarnings("resource")
 	public static GenericContainer<?> createRedisContainer() {
 		return new GenericContainer<>("redis:7.4.1-bookworm")
-				.withCreateContainerCmdModifier(cmd -> cmd.getHostConfig().withCpuCount(TestHelper.DEFAULT_CPU_QUOTA)
-						.withMemory(TestHelper.DEFAULT_MEMORY_QUOTA).withDiskQuota(TestHelper.DEFAULT_DISK_QUOTA))
+				.withCreateContainerCmdModifier(cmd -> cmd.getHostConfig().withCpuCount(TestHelper.getCpuQuota())
+						.withMemoryReservation(TestHelper.getMemoryReservationQuota())
+								.withMemory(TestHelper.getMemoryQuota()).withDiskQuota(TestHelper.getDiskQuota()))
 				.withExposedPorts(6379).withCommand("redis-server", "--save", "60", "1", "--loglevel", "warning")
 				.waitingFor(Wait.forListeningPort().withStartupTimeout(Duration.ofMinutes(3))).withStartupAttempts(3);
 	}
