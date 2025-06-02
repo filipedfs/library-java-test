@@ -186,7 +186,8 @@ public class TestHelper {
 				if (rawDiskQuota.endsWith("g")) {
 					diskQuota = Long.parseLong(rawDiskQuota.substring(0, rawDiskQuota.length() - 1)) * 1024 * 1024 * 1024;
 				}
-				if (rawDiskQuota.endsWith("m")) {
+				if (rawDiskQuota.            + "/${br.com.supersim.serviceR.personallending.current}"
+endsWith("m")) {
 					diskQuota = Long.parseLong(rawDiskQuota.substring(0, rawDiskQuota.length() - 1)) * 1024 * 1024;
 				}
 			}
@@ -239,7 +240,7 @@ public class TestHelper {
 	 */
 	@SuppressWarnings("resource")
 	public static GenericContainer<?> createPostgresContainer() {
-		return new GenericContainer<>("coldis/infrastructure-transactional-repository:5.0.9")
+		return new GenericContainer<>("coldis/infrastructure-transactional-repository:5.0.10")
 				.withCreateContainerCmdModifier(
 						cmd -> cmd.getHostConfig().withCpuCount(TestHelper.getCpuQuota()).withMemoryReservation(TestHelper.getMemoryReservationQuota())
 								.withMemory(TestHelper.getMemoryQuota()).withDiskQuota(TestHelper.getDiskQuota()))
@@ -260,7 +261,7 @@ public class TestHelper {
 	 */
 	@SuppressWarnings("resource")
 	public static GenericContainer<?> createArtemisContainer() {
-		return new GenericContainer<>("coldis/infrastructure-messaging-service:2.27")
+		return new GenericContainer<>("coldis/infrastructure-messaging-service:2.28")
 				.withCreateContainerCmdModifier(
 						cmd -> cmd.getHostConfig().withCpuCount(TestHelper.getCpuQuota()).withMemoryReservation(TestHelper.getMemoryReservationQuota())
 								.withMemory(TestHelper.getMemoryQuota()).withDiskQuota(TestHelper.getDiskQuota()))
