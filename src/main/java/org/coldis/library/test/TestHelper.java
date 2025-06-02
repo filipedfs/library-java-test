@@ -186,8 +186,7 @@ public class TestHelper {
 				if (rawDiskQuota.endsWith("g")) {
 					diskQuota = Long.parseLong(rawDiskQuota.substring(0, rawDiskQuota.length() - 1)) * 1024 * 1024 * 1024;
 				}
-				if (rawDiskQuota.            + "/${br.com.supersim.serviceR.personallending.current}"
-endsWith("m")) {
+				if (rawDiskQuota.endsWith("m")) {
 					diskQuota = Long.parseLong(rawDiskQuota.substring(0, rawDiskQuota.length() - 1)) * 1024 * 1024;
 				}
 			}
