@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.coldis.library.helper.RandomHelper;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -21,6 +22,12 @@ public class RetryAndFailFastExtension implements BeforeEachCallback, TestExecut
 	/** Default maximum number of attempts for a test before failing. */
 	private static final int MAX_ATTEMPTS = 3;
 
+	/** Minimum delay before next attempt in milliseconds. */
+	private static final Integer FIXED_DELAY_BEFORE_NEXT_ATTEMPT = 1000;
+
+	/** Random delay before next attempt in milliseconds. */
+	private static final Integer RANDOM_DELAY_BEFORE_NEXT_ATTEMPT = 10000;
+
 	/** If one of the tests has already failed. */
 	private static boolean TEST_FAILED = false;
 
@@ -28,7 +35,20 @@ public class RetryAndFailFastExtension implements BeforeEachCallback, TestExecut
 	 * Gets the maximum number of attempts for a test before failing.
 	 */
 	public static int getMaxAttempts() {
-		return Integer.parseInt(System.getProperty("project.config.source.test.retry-and-fail-fast.max-attempts", String.valueOf(RetryAndFailFastExtension.MAX_ATTEMPTS)));
+		return Integer.parseInt(
+				System.getProperty("project.config.source.test.retry-and-fail-fast.max-attempts", String.valueOf(RetryAndFailFastExtension.MAX_ATTEMPTS)));
+	}
+
+	/** Gets the delay before next attempt in milliseconds. */
+	public static Long getDelayBeforeNextAttempt(
+			final Integer attempt) {
+		return (Integer
+				.parseInt(System.getProperty("project.config.source.test.retry-and-fail-fast.fixed-delay-before-next-attempt",
+						String.valueOf(RetryAndFailFastExtension.FIXED_DELAY_BEFORE_NEXT_ATTEMPT)))
+				+ RandomHelper.getPositiveRandomLong(
+						Long.parseLong(System.getProperty("project.config.source.test.retry-and-fail-fast.random-delay-before-next-attempt",
+								String.valueOf(RetryAndFailFastExtension.RANDOM_DELAY_BEFORE_NEXT_ATTEMPT)))))
+				* attempt;
 	}
 
 	/** Gets if fail fast is enabled. */
@@ -49,6 +69,14 @@ public class RetryAndFailFastExtension implements BeforeEachCallback, TestExecut
 		}
 	}
 
+	/**
+	 * Handles test execution exceptions, retrying the test method up to a maximum
+	 * number of attempts.
+	 *
+	 * @param  context   The extension context.
+	 * @param  throwable The throwable that was thrown during test execution.
+	 * @throws Throwable If the test method fails after all attempts.
+	 */
 	@Override
 	public void handleTestExecutionException(
 			final ExtensionContext context,
@@ -98,7 +126,8 @@ public class RetryAndFailFastExtension implements BeforeEachCallback, TestExecut
 				}
 				// Log the exception.
 				final String testName = context.getRequiredTestMethod().getDeclaringClass().getName() + "." + context.getRequiredTestMethod().getName();
-				RetryAndFailFastExtension.LOGGER.error(testName + " -- Attempt " + attempt + " of " + RetryAndFailFastExtension.MAX_ATTEMPTS + " <<< FAILURE!", error);
+				RetryAndFailFastExtension.LOGGER.error(testName + " -- Attempt " + attempt + " of " + RetryAndFailFastExtension.MAX_ATTEMPTS + " <<< FAILURE!",
+						error);
 			}
 			// Finish the test context manager.
 			finally {
@@ -108,11 +137,13 @@ public class RetryAndFailFastExtension implements BeforeEachCallback, TestExecut
 					}
 				}
 				catch (final Throwable error) {
-					RetryAndFailFastExtension.LOGGER.error("Error finishing test context manager for " + context.getRequiredTestMethod().getDeclaringClass().getName()
-							+ "." + context.getRequiredTestMethod().getName(), error);
+					RetryAndFailFastExtension.LOGGER.error("Error finishing test context manager for "
+							+ context.getRequiredTestMethod().getDeclaringClass().getName() + "." + context.getRequiredTestMethod().getName(), error);
 				}
 			}
 
+			// Waits before the next attempt.
+			Thread.sleep(RetryAndFailFastExtension.getDelayBeforeNextAttempt(attempt));
 		}
 
 		// If the test method failed after all attempts, set the fail fast flag and
