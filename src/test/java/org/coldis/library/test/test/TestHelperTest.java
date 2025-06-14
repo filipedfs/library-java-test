@@ -10,6 +10,7 @@ import org.coldis.library.exception.IntegrationException;
 import org.coldis.library.helper.DateTimeHelper;
 import org.coldis.library.test.TestHelper;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -17,16 +18,22 @@ import org.junit.jupiter.api.Test;
  */
 public class TestHelperTest extends TestHelper {
 
+	
 	/**
 	 * Test data.
 	 */
 	private static final List<TestClass> COMPLETE_TEST_DATA = List.of(new TestClass("1", 1l, new TestClass("1", 1L, null)),
 			new TestClass("2", 2l, new TestClass("2", 2L, null)));
 
+	
 	/**
 	 * Test variable.
 	 */
 	private Integer testVar;
+	
+	@BeforeAll
+	public static void setup() {
+	}
 
 	/**
 	 * Tests a not valid variable state.

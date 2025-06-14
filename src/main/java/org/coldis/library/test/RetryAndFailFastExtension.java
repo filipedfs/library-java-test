@@ -23,10 +23,10 @@ public class RetryAndFailFastExtension implements BeforeEachCallback, TestExecut
 	private static final int MAX_ATTEMPTS = 3;
 
 	/** Minimum delay before next attempt in milliseconds. */
-	private static final Integer FIXED_DELAY_BEFORE_NEXT_ATTEMPT = 1000;
+	public static final Integer FIXED_DELAY_BEFORE_NEXT_ATTEMPT = 1000;
 
 	/** Random delay before next attempt in milliseconds. */
-	private static final Integer RANDOM_DELAY_BEFORE_NEXT_ATTEMPT = 10000;
+	public static final Integer RANDOM_DELAY_BEFORE_NEXT_ATTEMPT = 10000;
 
 	/** If one of the tests has already failed. */
 	private static boolean TEST_FAILED = false;

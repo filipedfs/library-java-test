@@ -101,7 +101,12 @@ public class TestHelper {
 	 * @return The test fork number.
 	 */
 	public static Integer getTestForkNumber() {
-		final Integer forkNumber = (NumberUtils.isParsable(System.getProperty("FORK_NUMBER")) ? (Integer.parseInt(System.getProperty("FORK_NUMBER"))) : 1);
+		String forkNumberString = System.getProperty("forkNumber");
+		TestHelper.LOGGER.debug("Test fork number (string): " + forkNumberString);
+		forkNumberString = (forkNumberString == null ? System.getProperty("FORK_NUMBER") : forkNumberString);
+		TestHelper.LOGGER.debug("Test fork number (string): " + forkNumberString);
+		final Integer forkNumber = (NumberUtils.isParsable(forkNumberString) ? Integer.parseInt(forkNumberString) : 1);
+		TestHelper.LOGGER.info("Test fork number: " + forkNumber);
 		return forkNumber;
 	}
 
