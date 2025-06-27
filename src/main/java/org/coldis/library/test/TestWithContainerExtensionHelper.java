@@ -44,8 +44,10 @@ public class TestWithContainerExtensionHelper {
 	 * @param field Container field.
 	 */
 	public static void startTestContainer(
+			final Class<?> testClass,
 			final Field field) {
 		try {
+			TestWithContainerExtensionHelper.LOGGER.info("Test container '{}' starting for class '{}'.", field.getName(), testClass.getSimpleName());
 			final GenericContainer<?> container = (GenericContainer<?>) field.get(null);
 			container.start();
 			// Sets the container ports as system properties.
@@ -56,10 +58,16 @@ public class TestWithContainerExtensionHelper {
 				System.setProperty(mappedPortPropertyName, mappedPort.toString());
 			});
 			// Sets the container host as system property.
-			System.setProperty(field.getName() + "_IP", container.getContainerInfo().getNetworkSettings().getIpAddress());
+			final String containerIpAddressEnv = field.getName() + "_IP";
+			final String containerIpAddress = container.getContainerInfo().getNetworkSettings().getIpAddress();
+			System.setProperty(containerIpAddressEnv, containerIpAddress);
+			TestWithContainerExtensionHelper.LOGGER.info("Test container '{}' started for class '{}' with {}={}", field.getName(), testClass.getSimpleName(),
+					containerIpAddressEnv, containerIpAddress);
 		}
 		catch (final Exception exception) {
-			TestWithContainerExtensionHelper.LOGGER.error("Error starting container.", exception);
+			TestWithContainerExtensionHelper.LOGGER.error("Test container '{}' did not start for class '{}': {}.", field.getName(), testClass.getSimpleName(),
+					exception.getLocalizedMessage());
+			TestWithContainerExtensionHelper.LOGGER.debug("Error starting container.", exception);
 		}
 	}
 

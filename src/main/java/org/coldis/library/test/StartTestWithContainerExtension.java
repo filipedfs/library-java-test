@@ -36,7 +36,7 @@ public class StartTestWithContainerExtension implements BeforeAllCallback {
 				: Executors.newSingleThreadExecutor();
 		@SuppressWarnings("unchecked")
 		final CompletableFuture<Void>[] containersFieldsJobs = containersFieldsFromTests.stream().map(field -> (CompletableFuture.runAsync((() -> {
-			TestWithContainerExtensionHelper.startTestContainer(field);
+			TestWithContainerExtensionHelper.startTestContainer(testClass, field);
 		}), executor))).toArray(CompletableFuture[]::new);
 		CompletableFuture.allOf(containersFieldsJobs).get();
 	}
