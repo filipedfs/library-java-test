@@ -6,12 +6,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.springframework.test.annotation.DirtiesContext;
+
 /**
  * Test with container.
  */
 @Inherited
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public @interface TestWithContainer {
 
 	/**
