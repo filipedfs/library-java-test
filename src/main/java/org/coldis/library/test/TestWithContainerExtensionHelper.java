@@ -56,12 +56,14 @@ public class TestWithContainerExtensionHelper {
 				final Integer mappedPort = container.getMappedPort(exposedPort);
 				final String mappedPortPropertyName = field.getName() + "_" + exposedPort;
 				System.setProperty(mappedPortPropertyName, mappedPort.toString());
+				TestWithContainerExtensionHelper.LOGGER.info("Test container '{}' for class '{}' setting {}={}", field.getName(), testClass.getSimpleName(),
+						mappedPortPropertyName, mappedPort.toString());
 			});
 			// Sets the container host as system property.
 			final String containerIpAddressEnv = field.getName() + "_IP";
 			final String containerIpAddress = container.getContainerInfo().getNetworkSettings().getIpAddress();
 			System.setProperty(containerIpAddressEnv, containerIpAddress);
-			TestWithContainerExtensionHelper.LOGGER.info("Test container '{}' started for class '{}' with {}={}", field.getName(), testClass.getSimpleName(),
+			TestWithContainerExtensionHelper.LOGGER.info("Test container '{}' for class '{}' setting {}={}", field.getName(), testClass.getSimpleName(),
 					containerIpAddressEnv, containerIpAddress);
 		}
 		catch (final Exception exception) {
