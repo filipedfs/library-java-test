@@ -260,7 +260,7 @@ public class TestHelper {
 				.withEnv(Map.of("ENABLE_JSON_CAST", "true", "ENABLE_UNACCENT", "true", "POSTGRES_ADMIN_PASSWORD", "postgres", "POSTGRES_ADMIN_USER", "postgres",
 						"REPLICATOR_USER_NAME", "replicator", "REPLICATOR_USER_PASSWORD", "replicator", "POSTGRES_DEFAULT_USER", TestHelper.TEST_USER_NAME,
 						"POSTGRES_DEFAULT_PASSWORD", TestHelper.TEST_USER_PASSWORD, "POSTGRES_DEFAULT_DATABASE", TestHelper.TEST_USER_NAME, "MAX_CONNECTIONS",
-						"20"))
+						"200"))
 				.waitingFor(Wait
 						.forSuccessfulCommand(
 								"PGPASSWORD=\"" + TestHelper.TEST_USER_PASSWORD + "\" psql -c 'SELECT 1;' -U \"" + TestHelper.TEST_USER_NAME + "\"")
