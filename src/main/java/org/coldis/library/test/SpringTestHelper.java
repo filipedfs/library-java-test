@@ -1,5 +1,6 @@
 package org.coldis.library.test;
 
+import java.security.SecureRandom;
 import java.util.Random;
 
 import org.slf4j.Logger;
@@ -20,7 +21,7 @@ public class SpringTestHelper extends TestHelper {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SpringTestHelper.class);
 
 	/** Random. */
-	protected static final Random RANDOM = new Random();
+	protected static final Random RANDOM = new SecureRandom();
 
 	/** JDBC template. */
 	@Autowired(required = false)

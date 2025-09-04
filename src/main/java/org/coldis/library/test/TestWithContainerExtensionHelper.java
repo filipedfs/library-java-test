@@ -3,6 +3,7 @@ package org.coldis.library.test;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -30,9 +31,11 @@ public class TestWithContainerExtensionHelper {
 			final ExtensionContext context) {
 		final Collection<Field> containersFields = new ArrayList<>();
 		for (final Field field : FieldUtils.getAllFieldsList(context.getTestClass().get())) {
-			if (java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
-				if (field.getType().equals(GenericContainer.class)) {
-					containersFields.add(field);
+			if (!Objects.equals(TestHelper.class, field.getDeclaringClass())) {
+				if (java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
+					if (field.getType().equals(GenericContainer.class)) {
+						containersFields.add(field);
+					}
 				}
 			}
 		}
