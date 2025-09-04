@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 /**
  * Test helper test.
  */
-@TestWithContainer(parallel = true)
+@TestWithContainer(parallel = true, reuse = true)
 @ExtendWith(value = { StartTestWithContainerExtension.class })
 @SpringBootTest(
 		classes = SpringTestApplication.class,

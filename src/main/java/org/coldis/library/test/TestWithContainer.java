@@ -27,5 +27,5 @@ public @interface TestWithContainer {
 	/**
 	 * Whether to reuse containers. Defaults to {@code true}.
 	 */
-	boolean reuse() default true;
+	boolean reuse() default false;
 }
