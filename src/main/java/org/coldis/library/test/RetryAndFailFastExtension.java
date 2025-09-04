@@ -53,7 +53,7 @@ public class RetryAndFailFastExtension implements BeforeEachCallback, TestExecut
 
 	/** Gets if fail fast is enabled. */
 	public static boolean isFailFastEnabled() {
-		return Objects.equals(System.getProperty("project.config.source.test.retry-and-fail-fast.fail-fast-enabled"), "false");
+		return Objects.equals(System.getProperty("project.config.source.test.retry-and-fail-fast.fail-fast-enabled"), "true");
 	}
 
 	/**
