@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ public class TestWithContainerExtensionHelper {
 	public static Collection<Field> getContainersFieldsFromTests(
 			final ExtensionContext context) {
 		final Collection<Field> containersFields = new ArrayList<>();
-		for (final Field field : context.getTestClass().get().getFields()) {
+		for (final Field field : FieldUtils.getAllFieldsList(context.getTestClass().get())) {
 			if (java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
 				if (field.getType().equals(GenericContainer.class)) {
 					containersFields.add(field);
@@ -82,6 +83,17 @@ public class TestWithContainerExtensionHelper {
 	public static Boolean shouldStartTestContainersInParallel(
 			final Class<?> testClass) {
 		return (testClass.getAnnotation(TestWithContainer.class) != null) && testClass.getAnnotation(TestWithContainer.class).parallel();
+	}
+
+	/**
+	 * If test containers should be reused.
+	 *
+	 * @param  testClass Test class.
+	 * @return           If test containers should be reused.
+	 */
+	public static Boolean shouldReuseTestContainers(
+			final Class<?> testClass) {
+		return (testClass.getAnnotation(TestWithContainer.class) != null) && testClass.getAnnotation(TestWithContainer.class).reuse();
 	}
 
 	/**

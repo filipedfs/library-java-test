@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testcontainers.containers.GenericContainer;
 
 /**
  * Container extension.
@@ -35,9 +36,35 @@ public class StopTestWithContainerExtension implements AfterAllCallback {
 		final Executor executor = TestWithContainerExtensionHelper.shouldStartTestContainersInParallel(testClass) ? Executors.newWorkStealingPool()
 				: Executors.newSingleThreadExecutor();
 		@SuppressWarnings("unchecked")
-		final CompletableFuture<Void>[] containersFieldsJobs = containersFieldsFromTests.stream()
-				.map(field -> (CompletableFuture.runAsync(() -> TestWithContainerExtensionHelper.stopTestContainer(field), executor)))
-				.toArray(CompletableFuture[]::new);
+		final CompletableFuture<Void>[] containersFieldsJobs = containersFieldsFromTests.stream().map(field -> (CompletableFuture.runAsync(() -> {
+			try {
+				final GenericContainer<?> container = (GenericContainer<?>) field.get(null);
+				StartTestWithContainerExtension.CONTAINER_LOCK.computeIfAbsent(container, k -> 0);
+				StartTestWithContainerExtension.CONTAINER_LOCK.put(container, StartTestWithContainerExtension.CONTAINER_LOCK.get(container) - 1);
+				final Boolean shouldReuseContainer = TestWithContainerExtensionHelper.shouldReuseTestContainers(testClass);
+				if (container.isRunning()) {
+					if (shouldReuseContainer) {
+						CompletableFuture.runAsync(() -> {
+							try {
+								Thread.sleep(10_000);
+								if (StartTestWithContainerExtension.CONTAINER_LOCK.getOrDefault(container, 0) <= 0) {
+									TestWithContainerExtensionHelper.stopTestContainer(field);
+								}
+							}
+							catch (final Exception exception) {
+								throw new RuntimeException(exception);
+							}
+						}, executor);
+					}
+					else {
+						TestWithContainerExtensionHelper.stopTestContainer(field);
+					}
+				}
+			}
+			catch (final Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		}, executor))).toArray(CompletableFuture[]::new);
 		CompletableFuture.allOf(containersFieldsJobs).get();
 	}
 

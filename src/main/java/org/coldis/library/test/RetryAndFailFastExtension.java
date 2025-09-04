@@ -126,8 +126,8 @@ public class RetryAndFailFastExtension implements BeforeEachCallback, TestExecut
 				}
 				// Log the exception.
 				final String testName = context.getRequiredTestMethod().getDeclaringClass().getName() + "." + context.getRequiredTestMethod().getName();
-				RetryAndFailFastExtension.LOGGER.error(testName + " -- Attempt " + attempt + " of " + RetryAndFailFastExtension.MAX_ATTEMPTS + " <<< FAILURE!",
-						error);
+				RetryAndFailFastExtension.LOGGER
+						.error(testName + " -- Attempt " + attempt + " of " + RetryAndFailFastExtension.getMaxAttempts() + " <<< FAILURE!", error);
 			}
 			// Finish the test context manager.
 			finally {

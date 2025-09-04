@@ -23,4 +23,9 @@ public @interface TestWithContainer {
 	 * @return if the containers should start in parallel.
 	 */
 	boolean parallel() default true;
+	
+	/**
+	 * Whether to reuse containers. Defaults to {@code true}.
+	 */
+	boolean reuse() default true;
 }

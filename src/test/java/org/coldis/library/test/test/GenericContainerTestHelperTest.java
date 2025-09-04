@@ -6,42 +6,30 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 import org.coldis.library.test.SpringTestHelper;
-import org.coldis.library.test.StartTestWithContainerExtension;
-import org.coldis.library.test.StopTestWithContainerExtension;
 import org.coldis.library.test.TestHelper;
-import org.coldis.library.test.TestWithContainer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.testcontainers.containers.GenericContainer;
 
 /**
  * Test helper test.
  */
-@TestWithContainer(parallel = true)
-@ExtendWith(value = { StartTestWithContainerExtension.class })
-@SpringBootTest(
-		classes = SpringTestApplication.class,
-		webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
-)
-@ExtendWith(value = { StopTestWithContainerExtension.class })
-public class ContainerTestHelperTest extends SpringTestHelper {
+public abstract class GenericContainerTestHelperTest extends SpringTestHelper {
 
 	/**
 	 * Postgres container.
 	 */
-	public static GenericContainer<?> POSTGRES_CONTAINER = TestHelper.createPostgresContainer();
+	public static GenericContainer<?> POSTGRES_CONTAINER = TestHelper.POSTGRES_CONTAINER;
 
 	/**
 	 * Artemis container.
 	 */
-	public static GenericContainer<?> ARTEMIS_CONTAINER = TestHelper.createArtemisContainer();
+	public static GenericContainer<?> ARTEMIS_CONTAINER = TestHelper.ARTEMIS_CONTAINER;
 
 	/**
 	 * Redis container.
 	 */
-	public static GenericContainer<?> REDIS_CONTAINER = TestHelper.createRedisContainer();
+	public static GenericContainer<?> REDIS_CONTAINER = TestHelper.REDIS_CONTAINER;
 
 	/**
 	 * Test Postgres container.

@@ -63,7 +63,7 @@ public class TestHelper {
 	/**
 	 * Default CPU count.
 	 */
-	private static Long DEFAULT_CPU_QUOTA = 2L;
+	private static Long DEFAULT_CPU_QUOTA = 1L;
 
 	/**
 	 * Default memory quota.
@@ -94,6 +94,15 @@ public class TestHelper {
 	 * Test user password.
 	 */
 	public static String TEST_USER_PASSWORD = "test";
+
+	/** Postgres container. */
+	public static GenericContainer<?> POSTGRES_CONTAINER = TestHelper.createPostgresContainer();
+
+	/** Artemis container. */
+	public static GenericContainer<?> ARTEMIS_CONTAINER = TestHelper.createArtemisContainer();
+
+	/** Redis container. */
+	public static GenericContainer<?> REDIS_CONTAINER = TestHelper.createRedisContainer();
 
 	/**
 	 * Gets the test fork number.
@@ -129,7 +138,6 @@ public class TestHelper {
 	public static Long getMemoryReservationQuota() {
 		String rawMemoryReservationQuota = System.getProperty("MEMORY_RESERVATION_QUOTA");
 		Long memoryReservationQuota = TestHelper.DEFAULT_MEMORY_RESERVATION_QUOTA;
-
 		try {
 			if (rawMemoryReservationQuota != null) {
 				rawMemoryReservationQuota = rawMemoryReservationQuota.trim().toLowerCase();
@@ -252,7 +260,7 @@ public class TestHelper {
 				.withEnv(Map.of("ENABLE_JSON_CAST", "true", "ENABLE_UNACCENT", "true", "POSTGRES_ADMIN_PASSWORD", "postgres", "POSTGRES_ADMIN_USER", "postgres",
 						"REPLICATOR_USER_NAME", "replicator", "REPLICATOR_USER_PASSWORD", "replicator", "POSTGRES_DEFAULT_USER", TestHelper.TEST_USER_NAME,
 						"POSTGRES_DEFAULT_PASSWORD", TestHelper.TEST_USER_PASSWORD, "POSTGRES_DEFAULT_DATABASE", TestHelper.TEST_USER_NAME, "MAX_CONNECTIONS",
-						"50"))
+						"20"))
 				.waitingFor(Wait
 						.forSuccessfulCommand(
 								"PGPASSWORD=\"" + TestHelper.TEST_USER_PASSWORD + "\" psql -c 'SELECT 1;' -U \"" + TestHelper.TEST_USER_NAME + "\"")
