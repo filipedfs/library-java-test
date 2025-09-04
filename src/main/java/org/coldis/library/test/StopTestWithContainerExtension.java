@@ -46,7 +46,7 @@ public class StopTestWithContainerExtension implements AfterAllCallback {
 					if (shouldReuseContainer) {
 						CompletableFuture.runAsync(() -> {
 							try {
-								Thread.sleep(15_000);
+								Thread.sleep(20_000);
 								if (StartTestWithContainerExtension.CONTAINER_LOCK.getOrDefault(container, 0) <= 0) {
 									StopTestWithContainerExtension.LOGGER.info("Reused test container '{}' stopping for class '{}'.", field.getName(),
 											testClass.getSimpleName());
