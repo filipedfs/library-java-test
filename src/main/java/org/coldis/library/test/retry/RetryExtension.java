@@ -12,19 +12,77 @@ import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
 import org.junit.jupiter.api.extension.TestWatcher;
 import org.springframework.test.context.TestContextManager;
 
+/**
+ * JUnit 5 extension that automatically retries a failing test method a
+ * configurable number of times, with a configurable backoff between attempts.
+ * <p>
+ * It integrates with Spring's {@link TestContextManager} to properly run
+ * Spring's before/after test method callbacks and also manually invokes
+ * JUnit's {@code @BeforeEach} and {@code @AfterEach} methods on each attempt.
+ * If {@link FailFastExtension} has flagged a previous failure (fail-fast
+ * enabled), remaining attempts are skipped.
+ * </p>
+ *
+ * <h2>Configuration via system properties</h2>
+ * The following system properties can be provided (e.g., via Maven/Gradle or
+ * JVM args) to tune the behavior:
+ * <ul>
+ *   <li>project.config.source.test.retry-and-fail-fast.max-attempts — default: 3</li>
+ *   <li>project.config.source.test.retry-and-fail-fast.fixed-delay-before-next-attempt — default: 1000 ms</li>
+ *   <li>project.config.source.test.retry-and-fail-fast.random-delay-before-next-attempt — default: 10000 ms</li>
+ * </ul>
+ * The actual delay before attempt N is: (fixedDelay + random[0..randomDelay]) * N.
+ *
+ * <h2>How to use</h2>
+ * Prefer using the meta-annotation {@link org.coldis.library.test.retry.TestWithRetry}
+ * on your test classes:
+ * <pre>
+ * {@code
+ * @TestWithRetry
+ * class MyFlakyTests {
+ *   @Test
+ *   void shouldEventuallyPass() { ... }
+ * }
+ * }
+ * </pre>
+ * You may also combine retry with fail-fast using
+ * {@link org.coldis.library.test.TestWithRetryAndFailFast}.
+ *
+ * Alternatively, you can directly register the extension:
+ * <pre>
+ * {@code
+ * @ExtendWith(RetryExtension.class)
+ * class MyTests { ... }
+ * }
+ * </pre>
+ */
 public class RetryExtension implements TestExecutionExceptionHandler, TestWatcher {
   private static final Log LOGGER = LogFactory.getLog(RetryExtension.class);
 
+  /** Default maximum attempts if none is configured. */
   private static final int MAX_ATTEMPTS = 3;
 
+  /** Default fixed delay (ms) added before the next attempt. */
   public static final Integer FIXED_DELAY_BEFORE_NEXT_ATTEMPT = 1000;
 
+  /** Default random delay (ms upper bound) added before the next attempt. */
   public static final Integer RANDOM_DELAY_BEFORE_NEXT_ATTEMPT = 10000;
 
+  /**
+   * @return The configured maximum number of attempts to run a test method before
+   *         letting it fail.
+   */
   public static int getMaxAttempts() {
     return Integer.parseInt(System.getProperty("project.config.source.test.retry-and-fail-fast.max-attempts", String.valueOf(RetryExtension.MAX_ATTEMPTS)));
   }
 
+  /**
+   * Computes the delay before the next attempt, multiplying base delay by the
+   * attempt index for a simple linear backoff.
+   *
+   * @param attempt attempt number (1-based)
+   * @return delay in milliseconds before the next attempt
+   */
   public static Long getDelayBeforeNextAttempt(
     final Integer attempt
   ) {
@@ -33,6 +91,20 @@ public class RetryExtension implements TestExecutionExceptionHandler, TestWatche
            * attempt;
   }
 
+  /**
+   * Core retry logic. Intercepts a thrown exception from a test method
+   * execution, then re-executes the test method up to {@link #getMaxAttempts()}
+   * times, unless fail-fast has already been triggered. Between attempts, waits
+   * for the configured backoff.
+   *
+   * The method also ensures Spring TestContext callbacks are properly invoked
+   * around each attempt and that any {@code @BeforeEach/@AfterEach} methods are
+   * executed on the test instance.
+   *
+   * @param context   JUnit extension context
+   * @param throwable the original test failure
+   * @throws Throwable rethrows the original throwable if all attempts fail
+   */
   @Override
   public void handleTestExecutionException(final ExtensionContext context, final Throwable throwable) throws Throwable {
 
@@ -112,6 +184,13 @@ public class RetryExtension implements TestExecutionExceptionHandler, TestWatche
     throw throwable;
   }
 
+  /**
+   * Attempts to unwrap the original cause from reflective invocation layers for
+   * clearer logging.
+   *
+   * @param error the caught error, possibly an InvocationTargetException
+   * @return the most relevant underlying Throwable for logging
+   */
   private Throwable getOriginalError(final Throwable error) {
     Throwable originalError = error;
     // Gets the actual error, if it is an InvocationTargetException and the cause is not null,
